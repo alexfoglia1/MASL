@@ -57,7 +57,6 @@ def phi(p):
 
 def test(n,z,i,j,a,K):
     root = (n-len(K)-3)**0.5
-   # print str(root*abs(z(i,j)))+"<="+str(phi(1-a/2))+"?"
     return root*abs(z(i,j)) <= phi(1-a/2)
 
 def meanof(dataset):
@@ -150,7 +149,7 @@ def rand_set(X,Var):
     rset = []
     for i in range(0,n):
         rset.append(numpy.random.normal(X[i],Var[i],n))
-    return rset; 
+    return numpy.transpose(rset); 
 
 def make_graph_from_dataset(dataset,alpha):
     sigma = getSigma(dataset)
@@ -161,14 +160,17 @@ def plot(adj_matrix,varnames):
     graphtools.plot_graph(adj_matrix,varnames)
 
 def get_rand_dataset(dim):
-    return rand_set(range(0,dim),range(0,dim))
+    return rand_set(range(0,dim),range(1,dim+1))
 
 def butterfly():
     return [[0.8, 0.5, 0, 0.6],[0.5, 1.4, -0.6, 0.4],[0, -0.6, 1.2, -0.3],[0.6, 0.4, -0.3, 1]]
 
 if __name__ == '__main__':
-    varnames = ['X1','X2','X3','X4']
-    alpha = 0.95
-    G = pc_algorithm(alpha,butterfly())
+    dataset = get_rand_dataset(7)
+    varnames = ['X1','X2','X3','X4','X5','X6','X7']
+    alpha = 0.50
+    G = make_graph_from_dataset(dataset,alpha)
+    print "Graph results: "
+    print matstr(G)  
     plot(G,varnames)
             
