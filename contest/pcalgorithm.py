@@ -57,7 +57,7 @@ def phi(p):
 
 def test(n,z,i,j,a,K):
     root = (n-len(K)-3)**0.5
-    print str(root*abs(z(i,j)))+"<="+str(phi(1-a/2))+"?"
+   # print str(root*abs(z(i,j)))+"<="+str(phi(1-a/2))+"?"
     return root*abs(z(i,j)) <= phi(1-a/2)
 
 def meanof(dataset):
@@ -139,10 +139,10 @@ def pc_algorithm(a,sigma_inverse):
                     counter = counter+1
                     if test(n,z,i,j,a,K):
                         act_g[i][j] = 0
-    #for i in range(0,n):
-    #    for j in range(0,n):
-    #        if i>j:
-    #            act_g[i][j] = act_g[j][i]
+    for i in range(0,n):
+        for j in range(0,n):
+            if i>j:
+                act_g[i][j] = act_g[j][i]
     return act_g;
 
 def rand_set(X,Var):
@@ -167,15 +167,8 @@ def butterfly():
     return [[0.8, 0.5, 0, 0.6],[0.5, 1.4, -0.6, 0.4],[0, -0.6, 1.2, -0.3],[0.6, 0.4, -0.3, 1]]
 
 if __name__ == '__main__':
-    #dataset = get_rand_dataset(7)
-    butterflyinv = butterfly()
     varnames = ['X1','X2','X3','X4']
-    alpha = 0.05
-    #G = make_graph_from_dataset(dataset,alpha)
-    #print "Generated dataset: "
-    #print matstr(dataset)
-    G = pc_algorithm(alpha,butterflyinv)
-    print "Graph results: "
-    print matstr(G)  
+    alpha = 0.95
+    G = pc_algorithm(alpha,butterfly())
     plot(G,varnames)
             
