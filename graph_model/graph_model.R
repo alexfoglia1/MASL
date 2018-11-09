@@ -126,6 +126,9 @@ pt(t.test, df, lower.tail = TRUE)*2
 pcor.test(pcor(c(1,3,2), V), 1, n=n)
 pcor.test(pcor(c(1,3,2), VV), 1, n=n)
 
+
+
+
 #### esempio dati marks
 library(ggm)
 data(marks)
@@ -153,13 +156,11 @@ pcor.test(pcor(c(2,5,1,3,4), var(marks)), 3, n=88)
 
 # stima da un dato grafo - estimates from a given graph
 S <- var(marks)
-stima<-fitConGraph(UG(~ mechanics*vectors*algebra+algebra*analysis*statistics), S, n=88)
+stima <- fitConGraph(UG(~ mechanics*vectors*algebra+algebra*analysis*statistics), S, n=88)
 round(solve(stima$Shat),4)
 round(correlations(stima$Shat),3) 
 drawGraph(UG(~ mechanics*vectors*algebra+algebra*analysis*statistics))
 drawGraph(UG(~ mechanics*vectors*algebra+algebra*analysis*statistics), adjust = TRUE)
-
-
 # attenzione : il metodo seguente richiederebbe n grande
 library(SIN)
 fisherz(cor(marks))
@@ -210,7 +211,7 @@ attach(mtcars)
 ############################################
 data(stress)
 n=100
-
+#####frozen shoulder########
 #############################################
 # Altri pacchetti
 ###############################################
