@@ -7,6 +7,9 @@ def plot_graph(adjmatrix,labels):
     rows, cols = np.where(adjacency_matrix == 1)
     edges = zip(rows.tolist(), cols.tolist())
     gr = nx.Graph()
+    gr = gr.to_directed()
+    for i in range(0,len(adjmatrix)):
+        gr.add_node(i)
     gr.add_edges_from(edges)
     if labels is None:
         labels = range(len(gr))
