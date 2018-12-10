@@ -1,0 +1,10 @@
+library(rpart)
+par(mfrow = c(1,1))
+data("kyphosis")
+head("kyphosis")
+fit1 <- rpart(Kyphosis ~ ., data = kyphosis, parms=list(split = "information"))
+fit1
+summary(fit1)
+plot(fit1)
+text(fit1,use.n = TRUE)
+rpart.plot::prp(fit1, type = 1, extra = 101)

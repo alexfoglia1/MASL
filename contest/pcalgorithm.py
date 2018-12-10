@@ -105,7 +105,6 @@ def _core_pc_algorithm(a,sigma_inverse):
     act_g = complete(N)
     z = lambda m,i,j : -m[i][j]/((m[i][i]*m[j][j])**0.5)
     while l<N:
-        #to_remove = list()
         for (i,j) in itertools.permutations(n,2):
             adjacents_of_i = adj(i,act_g)
             if j not in adjacents_of_i:
@@ -113,15 +112,10 @@ def _core_pc_algorithm(a,sigma_inverse):
             else:
                 adjacents_of_i.remove(j)
             if len(adjacents_of_i) >=l:
-                for k in itertools.combinations(adjacents_of_i,l) :
-                    #p_val = test(dataset,i,j,set(k))
-                    #if p_val > a:
-                    #if test(len(sigma_inverse[0]),z,i,j,a,set(k)):
+                for k in itertools.combinations(adjacents_of_i,l):
                     if N-len(k)-3 < 0:
                         return (act_g,sep_set)
-                    if test(sigma_inverse,z,i,j,l,a,k):              
-                        #print("Test is true")
-                        #to_remove.append((i,j))
+                    if test(sigma_inverse,z,i,j,l,a,k):
                         act_g[i][j] = 0
                         act_g[j][i] = 0
                         sep_set[i][j] |= set(k)
@@ -183,7 +177,7 @@ def to_dag(g,sep_set):
                     preds.add(pred)
             if len(succs & preds) > 0:
                 g[j][i] = 0
-        #rule3
+        #rule 3
         if g[i][j] > 0 and g[j][i] > 0:
             adjacents = set()
             for adjacent in adj(i,g):
