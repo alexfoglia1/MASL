@@ -109,39 +109,14 @@ class Neuron:
     def calculateDeltaWrtWeight(self, i):
         return self.inputs[i]
 
-import sys
-n_inputs = 2
-n_outputs = 2
-n_hidden = int(sys.argv[1])
-hid_bias = 0.0
-out_bias = 0.0
-training_sets = [
-    [[0,1],[0,1]],
-    [[0,2],[1,0]],
-    [[0,3],[0,1]],
-    [[0,4],[1,0]],
-    [[0,5],[0,1]],
-    [[0,6],[1,0]],
-    [[0,7],[0,1]],
-    [[0,8],[1,0]],
-    [[0,9],[0,1]],
-    [[1,0],[1,0]],
-    [[0,0],[1,0]],
-]
+#Example Main             
+#Define training_sets [[[expected inputs],[expected outputs]],...]
+#nn = NeuralNetwork(n_inputs,n_hidden,n_outputs,hid_bias,out_bias)
+#for i in range(10000):
+#    t_in,t_out = random.choice(training_sets)
+#    nn.train(t_in,t_out)
+#print("Total error: "+str(nn.totalError(training_sets)))
 
-nn = NeuralNetwork(n_inputs,n_hidden,n_outputs,hid_bias,out_bias)
-print("Training")
-for i in range(10000):
-    t_in,t_out = random.choice(training_sets)
-    nn.train(t_in,t_out)
-print("Training completed")
-print("Total error: "+str(nn.totalError(training_sets)))
-exit()
-while True:
-    x = int(raw_input("Insert one value\n"))
-    print("Feeding the network forward with "+str([x])+"\nOutputs:")
-    nn.feedForward([x])
-    print(str(nn.output.getOutputs()))
     
                     
         
