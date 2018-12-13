@@ -1,233 +1,136 @@
 import itertools
-import copy
-import numpy
-import graphtools
-from gsq.ci_tests import ci_test_bin, ci_test_dis
-#from gsq.gsq_testdata import bin_data, dis_data
+from itertools import combinations, chain
+from scipy.stats import norm, pearsonr
+import pandas as pd
+import numpy as np
+import math
+import networkx as nx
+import matplotlib.pyplot as plt
 
+setOfParts = lambda x : chain.from_iterable(combinations(list(x),n) for n in range(len(list(x))+1))
+complete = lambda n : [[1 for i in range(n)] for i in range(n)]
 
-def generate(n):
-    rnorm = lambda x : numpy.random.normal(size=n)    
-    x1 = rnorm(n)
-    a=3
-    b=5
-    x2 = a*x1+rnorm(n)
-    x3 = a*x1+rnorm(n)
-    x4 = a*x1+rnorm(n)
-    y  = b*x2 + b*x3 + b*x4 + rnorm(n)
-    return y
+def get_skeleton(dataset, alpha, labels,corr_matrix = None):
+    var_covar = dataset.cov().values
+    return pc_algorithm(np.linalg.pinv(var_covar), dataset.values.shape[0], alpha, labels, corr_matrix = corr_matrix)
 
-def matstr(A):
-    tos = ""
-    for row in A:
-        tos = tos + str(row)+"\n"
-    return tos
-
-def complete(n):
-    A = list()
-    for i in range(0,n):
-        row = list()
-        for j in range(0,n):
-            if i == j:
-                row.append(0)
-            else:
-                row.append(1)
-        A.append(row)
-    return A
-
-def adj(i,G):
-    adjacents = list()
-    for j in range(0,len(G[i])):
-        if G[i][j] == 1:
-            adjacents.append(j)
-    return adjacents
-
-#def test(dataset,i,j,k):
-#    return ci_test_dis(dataset,i,j,k)
-
-
-
-#per il pucce: guarda slide lucidi1.key a partire da pagina 26 per capire perche testo l'indipendenza condizionata in questo modo
-def test(sigma_inverse,z,i,j,l,a,k):
-    def erfinv(x):
-        sgn = 1
-        a = 0.147
-        PI = numpy.pi
-        if x<0:
-            sgn = -1
-        temp = 2/(PI*a) + numpy.log(1-x**2)/2
-        add_1 = temp**2
-        add_2 = numpy.log(1-x**2)/a
-        add_3 = temp
-        rt1 = (add_1-add_2)**0.5
-        rtarg = rt1 - add_3
-        return sgn*(rtarg**0.5)
-    def indep_test_ijK(K): #compute partial correlation of i and j given ONE conditioning variable K
-        part_corr_coeff_ij = z(sigma_inverse,i,j) #this gives the partial correlation coefficient of i and j
-        part_corr_coeff_iK = z(sigma_inverse,i,K) #this gives the partial correlation coefficient of i and k
-        part_corr_coeff_jK = z(sigma_inverse,j,K) #this gives the partial correlation coefficient of j and k
-        part_corr_coeff_ijK = (part_corr_coeff_ij - part_corr_coeff_iK*part_corr_coeff_jK)/((((1-part_corr_coeff_iK**2))**0.5) * (((1-part_corr_coeff_jK**2))**0.5)) #this gives the partial correlation coefficient of i and j given K
-        print(str(part_corr_coeff_ijK)+" == 0?")        
-        return abs(part_corr_coeff_ijK) == 0 #i independent from j given K if partial_correlation(i,k)|K == 0 (under jointly gaussian assumption) [could check if abs is < alpha?]
-    def indep_test():
-        n = len(sigma_inverse[0])    
-        phi = lambda p : (2**0.5)*erfinv(2*p-1)
-        root = (n-len(k)-3)**0.5
-        print("root value is "+str(root))
-        print str(root*abs(z(sigma_inverse,i,j)))+"<="+str(phi(1-a/2))+"?"
-        return root*abs(z(sigma_inverse,i,j)) <= phi(1-a/2)
-    print("test if "+str(i)+" and "+str(j)+" are independent given these "+str(l)+" variables: "+str(k))
-    if l == 0:
-        print(str(z(sigma_inverse,i,j))+" == 0 ?")
-        return abs(z(sigma_inverse,i,j)) == 0 #i independent from j <=> partial_correlation(i,j) == 0 (under jointly gaussian assumption) [could check if abs is < alpha?]
-    elif l == 1:
-        print(str(z(sigma_inverse,i,j))+" == 0?")
-        return indep_test_ijK(k[0])
-    elif l == 2:
-        return indep_test_ijK(k[0]) and indep_test_ijK(k[1]) #ASSUMING THAT IJ ARE INDEPENDENT GIVEN Y,Z <=> IJ INDEPENDENT GIVEN Y AND IJ INDEPENDENT GIVEN Z  
-    else: #i have to use the independent test with the z-fisher function
-        return indep_test()
-    
-
-
-
-def pc_algorithm(a,dataset):
-    sigma = numpy.cov(dataset)
-    sigma_inverse = numpy.linalg.inv(sigma)
-    (act_g,sep_set) = _core_pc_algorithm(a,sigma_inverse)
-    return (act_g,sep_set)
-
-def _core_pc_algorithm(a,sigma_inverse):
+def pc_algorithm(sigma_inverse, N, alpha, labels, corr_matrix = None):
+    def tocor(vcv):
+        cm = []
+        for i in range(0,len(vcv)):
+            cm_row = []
+            for j in range(0,len(vcv[i])):
+                cov_ij = vcv[i][j]
+                sd_i = math.sqrt(vcv[i][i])
+                sd_j = math.sqrt(vcv[j][j])
+                corr_ij = cov_ij/(sd_i*sd_j)
+                cm_row.append(corr_ij)
+            cm.append(cm_row)
+        return np.array(cm)
+    if corr_matrix is None: 
+        sigma = np.linalg.pinv(sigma_inverse)
+        corr_matrix = tocor(sigma)
+    n = len(corr_matrix[0])
+    G = complete(n)
+    for i in range(n):
+        G[i][i] = 0
+    sep_set = [[[] for i in range(n)] for j in range(n)]
+    stop = False
     l = 0
-    N = len(sigma_inverse[0])
-    n = range(N)
-    sep_set = [ [set() for i in n] for j in n]
-    act_g = complete(N)
-    z = lambda m,i,j : -m[i][j]/((m[i][i]*m[j][j])**0.5)
-    while l<N:
-        for (i,j) in itertools.permutations(n,2):
-            adjacents_of_i = adj(i,act_g)
-            if j not in adjacents_of_i:
-                continue
-            else:
-                adjacents_of_i.remove(j)
-            if len(adjacents_of_i) >=l:
-                for k in itertools.combinations(adjacents_of_i,l):
-                    if N-len(k)-3 < 0:
-                        return (act_g,sep_set)
-                    if test(sigma_inverse,z,i,j,l,a,k):
-                        act_g[i][j] = 0
-                        act_g[j][i] = 0
-                        sep_set[i][j] |= set(k)
-                        sep_set[j][i] |= set(k)
-                        #break
-                    #else:
-                        #print("Test is false")
-        #for (i,j) in to_remove:
-        #    act_g[i][j] = 0
+    under_test = {0: 0}
+    def adj(x,G):
+        adjacents = list()
+        for j in range(0,len(G[x])):
+            if G[x][j] == 1:
+                adjacents.append(j)
+        return adjacents
+    while stop == False and any(G):
+        l1 = l + 1
+        stop = True
+        act_ind = []
+        for i in range(len(G)):
+            for j in range(len(G[i])):
+                if G[i][j] == 1:
+                    act_ind.append((i,j))
+        for x,y in act_ind:
+            if G[x][y] ==1 :      
+                neighbors = adj(x,G)
+                neighbors.remove(y)
+                if len(neighbors) >= l:
+                    if len(neighbors) > l:
+                        stop = False
+                    for K in set(itertools.combinations(neighbors, l)):
+                        p_value = indep_test(corr_matrix, N, x, y, list(K))
+                        if p_value >= alpha:
+                            G[x][y] = 0
+                            G[y][x] = 0
+                            sep_set[x][y] = list(K)
+                            break
         l = l + 1
-    return (act_g,sep_set)
+    return (np.array(G),sep_set)
 
-def plot(adj_matrix,varnames):
-    graphtools.plot_graph(adj_matrix,varnames)
+def indep_test(CM, n, i, j, K):
+    if len(K) == 0:
+        r = CM[i, j]
+    elif len(K) == 1:
+        r = (CM[i, j] - CM[i, K] * CM[j, K]) / math.sqrt((1 - math.pow(CM[j, K], 2)) * (1 - math.pow(CM[i, K], 2)))
+    else:
+        CM_SUBSET = CM[np.ix_([i]+[j]+K, [i]+[j]+K)]
+        PM_SUBSET = np.linalg.pinv(CM_SUBSET)
+        r = -1 * PM_SUBSET[0, 1] / math.sqrt(abs(PM_SUBSET[0, 0] * PM_SUBSET[1, 1]))
+    r = min(0.999999, max(-0.999999,r))
+    res = math.sqrt(n - len(K) - 3) * 0.5 * math.log1p((2*r)/(1-r))
+    return 2 * (1 - norm.cdf(abs(res)))
 
-def to_dag(g,sep_set):
-    n = len(g[0])
-    for (i,j) in itertools.combinations(range(n),2):
-        adj_i = adj(i,g)
-        if j in adj_i:
-            continue
-        adj_j = adj(j,g)
-        if i in adj_j:
-            continue
-        intersection = set(adj_i) & set(adj_j)
-        for var in intersection:
-            if var not in sep_set[i][j]:
-                if g[var][i]>0:
-                    g[var][i] = 0
-                    pass
-                if g[var][j]>0:
-                    g[var][j] = 0
-                    pass
-    def predecessors(i):
-        preds = list()
-        for j in range(n):
-            if g[j][i] > 0:
-                preds.append(j)
-        return preds
-    
-    for (i,j) in itertools.combinations(range(n),2):
-        #rule 1
-        if g[i][j] > 0 and g[j][i] > 0:
-             for pred in predecessors(i):
-                if g[i][pred] > 0:
-                    continue
-                if g[j][pred] > 0 or g[pred][j] > 0:
-                    continue
-                g[j][i] = 0
-        #rule 2
-        if g[i][j] > 0 and g[j][i] > 0:
-            succs = set()
-            for succ in adj(i,g):
-                if g[succ][i] == 0: 
-                    succs.add(succ)
-            preds = set()
-            for pred in predecessors(j):
-                if g[j][pred] == 0:
-                    preds.add(pred)
-            if len(succs & preds) > 0:
-                g[j][i] = 0
-        #rule 3
-        if g[i][j] > 0 and g[j][i] > 0:
-            adjacents = set()
-            for adjacent in adj(i,g):
-                if g[adjacent][i] > 0:
-                    adjacents.add(adjacent)
-            for (k, l) in itertools.combinations(adjacents, 2):
-                if g[k][l] > 0 or g[l][k] > 0:
-                    continue
-                if g[j][k] > 0 or g[k][j] == 0:
-                    continue
-                if g[j][l] > 0 or g[l][j] == 0:
-                    continue
-                g[j][i] = 0
-    return g        
-            
+def plot(toplot, labels):
+    G = nx.DiGraph()
+    for i in range(len(toplot)):
+        G.add_node(labels[i])
+        for j in range(len(toplot[i])):
+            if toplot[i][j] == 1:
+                G.add_edges_from([(labels[i], labels[j])])
+    nx.draw(G, with_labels = True)
+    plt.savefig("graph.png")
+    plt.show()
 
-def read(filename):
-    lines = [line.rstrip('\r\n') for line in open(filename)]
-    varnames = lines[0]
-    spl_varnames = varnames.split()
-    rows = list()
-    i = 0
-    for line in lines[1:]:
-        values = line.split()
-        fvalues = list()
-        for strvalue in values:
-            floatval = float(strvalue)*1000000
-            intval = int(floatval)
-            fvalues.append(intval)
-        rows.append(fvalues)
-        print(fvalues)
-    return (numpy.array(rows),spl_varnames)
-        
+
+
+def butterfly_model():
+    alpha = .05
+    varnames = varnames = ["mec","vec","alg","ana","stat"]
+    sigma_inverse=[[1.000,0.331,0.235,0.000,0.000],
+                   [0.553,1.000,0.327,0.000,0.000],
+                   [0.546,0.610,1.000,0.451,0.364],
+                   [0.388,0.433,0.711,1.000,0.256],
+                   [0.363,0.405,0.665,0.607,1.000]]
+    (g,sep_set) = pc_algorithm(np.array(sigma_inverse),100,alpha,varnames)
+    print(g)
+    plot(g,varnames)
+
+def from_file(filename, separator = ","):
+    alpha = .05
+    dataset = pd.read_csv(filename,sep = separator)
+    (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
+    print(g)
+    plot(g,dataset.columns)
+
+def generated():
+    alpha = .05
+    varnames = ["x1","x2","x3","x4","y"]
+    N = 500
+    (x1,x2,x3,x4,y) = generate(N)
+    dataset = [x1,x2,x3,x4,y]
+    dataset = np.array(transpose(dataset))
+    sigma = np.cov(dataset)
+    sigma_inverse = np.linalg.pinv(sigma)
+    (g,sep_set) = pc_algorithm(sigma_inverse,N, alpha, varnames)
+    print(g)
+    plot(g, varnames)
 
 if __name__ == '__main__':
-    #N = 500
-    #VARIABLES = 5
-    #dataset = generate(N)
-    #dataset = dataset.reshape(VARIABLES,N/VARIABLES)
-    #varnames = ["x1","x2","x3","x4","y"]    
-    varnames = ["mec","vec","alg","ana","stat"]
-    #(dataset,varnames) = read("aircraft.dat")
-    sigma_inverse=[[1.000,0.331,0.235,0.000,0.000],[0.553,1.000,0.327,0.000,0.000],[ 0.546,0.610,1.000  ,  0.451  ,    0.364],[0.388 ,  0.433 ,  0.711 ,   1.000   ,   0.256],[0.363 ,  0.405 ,  0.665  ,  0.607   ,   1.000]]
-    alpha = 0.01
-    (G,sep_set) = _core_pc_algorithm(alpha,sigma_inverse)
-    print("Skeleton: ")
-    print (matstr(G))  
-    plot(G,varnames)
-    G = to_dag(G,sep_set)
-    print("Directed acyclic graph: ")
-    plot(G,varnames)
-    print (matstr(G))
-            
+    #butterfly_model()
+    from_file('guPrenat.dat',separator = '\t')
+    
+        
+           
+    
