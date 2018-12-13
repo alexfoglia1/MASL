@@ -37,7 +37,6 @@ def pc_algorithm(sigma_inverse, N, alpha, labels, corr_matrix = None):
     sep_set = [[[] for i in range(n)] for j in range(n)]
     stop = False
     l = 0
-    under_test = {0: 0}
     def adj(x,G):
         adjacents = list()
         for j in range(0,len(G[x])):
@@ -211,7 +210,7 @@ def gen_lin_reg_model(a,b,N):
 
 if __name__ == '__main__':
     #butterfly_model()
-    #from_file('cancer.csv',separator = ',')
+    #from_file('java.dat',separator = ',')
     gen_lin_reg_model(3,5,999999)
     
         
