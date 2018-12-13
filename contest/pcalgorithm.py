@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 setOfParts = lambda x : chain.from_iterable(combinations(list(x),n) for n in range(len(list(x))+1))
 complete = lambda n : [[1 for i in range(n)] for i in range(n)]
+rnorm = lambda n : np.random.normal(size=n) 
 
 def get_skeleton(dataset, alpha, labels,corr_matrix = None):
     var_covar = dataset.cov().values
@@ -82,6 +83,76 @@ def indep_test(CM, n, i, j, K):
     res = math.sqrt(n - len(K) - 3) * 0.5 * math.log1p((2*r)/(1-r))
     return 2 * (1 - norm.cdf(abs(res)))
 
+def to_cpdag(skeleton, sep_set):
+    def getIndependents(cpdag,reqij,reqji):
+        ind = []
+        for i in range(len(cpdag)):
+            for j in range(len(cpdag)):
+                if cpdag[i][j] == reqij and (reqji == None or cpdag[j][i] == reqji):
+                    ind.append((i,j))
+        return sorted(ind, key = lambda z:(z[1],z[0]))
+    cpdag = skeleton.tolist()
+    ind = getIndependents(skeleton,1,None)
+    for x, y in ind:
+        allZ = []
+        for z in range(len(cpdag)):
+            if skeleton[y][z] == 1 and z != x:
+                allZ.append(z)
+        for z in allZ:
+            if skeleton[x][z] == 0 and sep_set[x][z] != None and sep_set[z][x] != None and not (
+                    y in sep_set[x][z] or y in sep_set[z][x]):
+                cpdag[x][y] = cpdag[z][y] = 1
+                cpdag[y][x] = cpdag[y][z] = 0
+    #rule 1
+    search = list(cpdag)
+    ind = getIndependents(cpdag,1,0)
+    for a,b in ind:
+        found = []
+        for i in range(len(search)):
+            if (search[b][i] == 1 and search[i][b] == 1) and (search[a][i] == 0 and search[i][a] == 0):
+                 found.append(i)
+        if len(found) > 0:
+            for c in found:
+                if cpdag[b][c] == 1 and cpdag[c][b] == 1:
+                    cpdag[b][c] = 1
+                    cpdag[c][b] = 0
+                elif cpdag[b][c] == 0 and cpdag[c][b] == 1:
+                    cpdag[b][c] = 2
+                    cpdag[c][b] = 2
+    #rule2
+    search = list(cpdag)
+    ind = getIndependents(cpdag,1,1)
+    for a, b in ind:
+        found = []
+        for i in range(len(search)):
+            if (search[a][i] == 1 and search[i][a] == 0) and (search[i][b] == 1 and search[b][i] == 0):
+                found.append(i)
+        if len(found) > 0:
+            if cpdag[a][b] == 1 and pdag[b][a] == 1:
+                cpdag[a][b] = 1
+                cpdag[b][a] = 0
+            elif cpdag[a][b] == 0 and cpdag[b][a] == 1:
+                cpdag[a][b] = cpdag[b][a] = 2    
+    #rule3
+    search = list(cpdag)
+    ind = getIndependents(cpdag,1,1)
+    for a, b in ind:
+        found = []
+        for i in range(len(search)):
+            if (search[a][i] == 1 and search[i][a] == 1) and (search[i][b] == 1 and search[b][i] == 0):
+                found.append(i)
+        if len(found) >= 2:
+            for c1, c2 in combinations(found, 2):
+                if search[c1][c2] == 0 and search[c2][c1] == 0:
+                    if search[a][b] == 1 and search[b][a] == 1:
+                        cpdag[a][b] = 1
+                        cpdag[b][a] = 0
+                        break
+                    elif search[a][b] == 0 and search[b][a] == 1:
+                        cpdag[a][b] = cpdag[b][a] = 2
+                        break
+    return np.array(cpdag)
+
 def plot(toplot, labels):
     G = nx.DiGraph()
     for i in range(len(toplot)):
@@ -92,8 +163,6 @@ def plot(toplot, labels):
     nx.draw(G, with_labels = True)
     plt.savefig("graph.png")
     plt.show()
-
-
 
 def butterfly_model():
     alpha = .05
@@ -113,23 +182,34 @@ def from_file(filename, separator = ","):
     (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
     print(g)
     plot(g,dataset.columns)
-
-def generated():
-    alpha = .05
-    varnames = ["x1","x2","x3","x4","y"]
-    N = 500
-    (x1,x2,x3,x4,y) = generate(N)
-    dataset = [x1,x2,x3,x4,y]
-    dataset = np.array(transpose(dataset))
-    sigma = np.cov(dataset)
-    sigma_inverse = np.linalg.pinv(sigma)
-    (g,sep_set) = pc_algorithm(sigma_inverse,N, alpha, varnames)
+    g = to_cpdag(g,sep_set)
     print(g)
-    plot(g, varnames)
+    plot(g,dataset.columns)
+
+def gen_lin_reg_model(a,b,N):
+    alpha = .10
+    x1 = rnorm(N)
+    x2 = a*x1+rnorm(N)
+    x3 = a*x1+rnorm(N)
+    x4 = a*x1+rnorm(N)
+    y = b*x2 + b*x3 + b*x4 + rnorm(N)
+    dataset = pd.DataFrame({'x1': x1.tolist(),
+                       'x2': x2.tolist(),
+                       'x3': x3.tolist(),
+                       'x4': x4.tolist(),
+                        'y': y.tolist()
+                        })
+    (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
+    print(g)
+    plot(g,dataset.columns)
+    g = to_cpdag(g,sep_set)
+    print(g)
+    plot(g,dataset.columns)
 
 if __name__ == '__main__':
     #butterfly_model()
     from_file('guPrenat.dat',separator = '\t')
+    #gen_lin_reg_model(3,5,50000)
     
         
            
