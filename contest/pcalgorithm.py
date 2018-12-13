@@ -7,7 +7,6 @@ import math
 import networkx as nx
 import matplotlib.pyplot as plt
 
-setOfParts = lambda x : chain.from_iterable(combinations(list(x),n) for n in range(len(list(x))+1))
 complete = lambda n : [[1 for i in range(n)] for i in range(n)]
 rnorm = lambda n : np.random.normal(size=n) 
 
@@ -128,7 +127,7 @@ def to_cpdag(skeleton, sep_set):
             if (search[a][i] == 1 and search[i][a] == 0) and (search[i][b] == 1 and search[b][i] == 0):
                 found.append(i)
         if len(found) > 0:
-            if cpdag[a][b] == 1 and pdag[b][a] == 1:
+            if cpdag[a][b] == 1 and cpdag[b][a] == 1:
                 cpdag[a][b] = 1
                 cpdag[b][a] = 0
             elif cpdag[a][b] == 0 and cpdag[b][a] == 1:
@@ -165,14 +164,14 @@ def plot(toplot, labels):
     plt.show()
 
 def butterfly_model():
-    alpha = .05
+    alpha = .10
     varnames = varnames = ["mec","vec","alg","ana","stat"]
     sigma_inverse=[[1.000,0.331,0.235,0.000,0.000],
                    [0.553,1.000,0.327,0.000,0.000],
                    [0.546,0.610,1.000,0.451,0.364],
                    [0.388,0.433,0.711,1.000,0.256],
                    [0.363,0.405,0.665,0.607,1.000]]
-    (g,sep_set) = pc_algorithm(np.array(sigma_inverse),100,alpha,varnames)
+    (g,sep_set) = pc_algorithm(np.array(sigma_inverse),1000,alpha,varnames)
     print(g)
     plot(g,varnames)
     g = to_cpdag(g,sep_set)
@@ -190,12 +189,13 @@ def from_file(filename, separator = ","):
     plot(g,dataset.columns)
 
 def gen_lin_reg_model(a,b,N):
-    alpha = .10
+    alpha = .05
     x1 = rnorm(N)
     x2 = a*x1+rnorm(N)
     x3 = a*x1+rnorm(N)
     x4 = a*x1+rnorm(N)
-    y = b*x2 + b*x3 + b*x4 + rnorm(N)
+    y = b*x2 + b*x3 + b*x4 + rnorm(N) + 5
+
     dataset = pd.DataFrame({'x1': x1.tolist(),
                        'x2': x2.tolist(),
                        'x3': x3.tolist(),
@@ -210,9 +210,9 @@ def gen_lin_reg_model(a,b,N):
     plot(g,dataset.columns)
 
 if __name__ == '__main__':
-    butterfly_model()
-    #from_file('guPrenat.dat',separator = '\t')
-    #gen_lin_reg_model(3,5,50000)
+    #butterfly_model()
+    #from_file('cancer.csv',separator = ',')
+    gen_lin_reg_model(3,5,999999)
     
         
            
