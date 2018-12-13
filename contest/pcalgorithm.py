@@ -175,6 +175,9 @@ def butterfly_model():
     (g,sep_set) = pc_algorithm(np.array(sigma_inverse),100,alpha,varnames)
     print(g)
     plot(g,varnames)
+    g = to_cpdag(g,sep_set)
+    print(g)
+    plot(g,varnames)
 
 def from_file(filename, separator = ","):
     alpha = .05
@@ -207,8 +210,8 @@ def gen_lin_reg_model(a,b,N):
     plot(g,dataset.columns)
 
 if __name__ == '__main__':
-    #butterfly_model()
-    from_file('guPrenat.dat',separator = '\t')
+    butterfly_model()
+    #from_file('guPrenat.dat',separator = '\t')
     #gen_lin_reg_model(3,5,50000)
     
         
