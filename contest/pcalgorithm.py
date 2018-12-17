@@ -208,10 +208,26 @@ def gen_lin_reg_model(a,b,N):
     print(g)
     plot(g,dataset.columns)
 
+def gen_lrg2():
+    alpha = .05
+    N = 99999
+    x1 = rnorm(N)
+    x2 = 3*x1+rnorm(N)
+    y = 3*x2+rnorm(N)
+    dataset = pd.DataFrame({
+                       'x1': x1.tolist(),
+                       'x2': x2.tolist(),
+                        'y': y.tolist()
+                        })
+    (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
+    g = to_cpdag(g,sep_set)
+    plot(g,dataset.columns)
+    
 if __name__ == '__main__':
     #butterfly_model()
-    #from_file('java.dat',separator = ',')
-    gen_lin_reg_model(3,5,999999)
+    from_file('train.csv',separator = ',')
+    #gen_lin_reg_model(3,5,999999)
+    #catgen_lrg2()
     
         
            
