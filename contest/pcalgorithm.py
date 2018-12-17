@@ -162,15 +162,21 @@ def plot(toplot, labels):
     plt.savefig("graph.png")
     plt.show()
 
-def butterfly_model():
+def test_butterfly_model():
     alpha = .10
-    varnames = varnames = ["mec","vec","alg","ana","stat"]
-    sigma_inverse=[[1.000,0.331,0.235,0.000,0.000],
-                   [0.553,1.000,0.327,0.000,0.000],
-                   [0.546,0.610,1.000,0.451,0.364],
-                   [0.388,0.433,0.711,1.000,0.256],
-                   [0.363,0.405,0.665,0.607,1.000]]
-    (g,sep_set) = pc_algorithm(np.array(sigma_inverse),1000,alpha,varnames)
+    #varnames = varnames = ["mec","vec","alg","ana","stat"]
+    #sigma_inverse=[[1.000,0.331,0.235,0.000,0.000],
+    #               [0.553,1.000,0.327,0.000,0.000],
+    #               [0.546,0.610,1.000,0.451,0.364],
+    #               [0.388,0.433,0.711,1.000,0.256],
+    #               [0.363,0.405,0.665,0.607,1.000]]
+    dataset = pd.read_csv("marks.dat",sep="\t")
+    import time
+    t0 = time.time()
+    (g,sep_set) = get_skeleton(dataset, alpha, dataset.columns, corr_matrix = dataset.corr().values)
+    #(g,sep_set) = pc_algorithm(np.array(sigma_inverse),999999,alpha,varnames)
+    tf = time.time()
+    print "Elapsed "+str(tf-t0)+" sec"
     print(g)
     plot(g,varnames)
     g = to_cpdag(g,sep_set)
@@ -189,24 +195,34 @@ def from_file(filename, separator = ","):
 
 def gen_lin_reg_model(a,b,N):
     alpha = .05
+    import time
+    t0 = time.time()
     x1 = rnorm(N)
     x2 = a*x1+rnorm(N)
     x3 = a*x1+rnorm(N)
     x4 = a*x1+rnorm(N)
     y = b*x2 + b*x3 + b*x4 + rnorm(N) + 5
-
+    tf = time.time()
+    delta_t0 = (tf-t0)
     dataset = pd.DataFrame({'x1': x1.tolist(),
                        'x2': x2.tolist(),
                        'x3': x3.tolist(),
                        'x4': x4.tolist(),
                         'y': y.tolist()
                         })
+    t0 = time.time()
     (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
+    tf = time.time()
+    delta_t1 = (tf-t0)
     print(g)
-    plot(g,dataset.columns)
+    #plot(g,dataset.columns)
+    t0 = time.time()
     g = to_cpdag(g,sep_set)
+    tf = time.time()
     print(g)
-    plot(g,dataset.columns)
+    delta_t2 = (tf-t0)
+    #plot(g,dataset.columns)
+    return (delta_t0,delta_t1,delta_t2)
 
 def gen_lrg2():
     alpha = .05
@@ -222,12 +238,19 @@ def gen_lrg2():
     (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
     g = to_cpdag(g,sep_set)
     plot(g,dataset.columns)
+
+def test_linear_regression():
+    (t0,t1,t2) = gen_lin_reg_model(3,5,999999)
+    print "Time to generate: "+str(t0)+" sec"
+    print "Time to estimate skeleton: "+str(t1)+" sec"
+    print "Time to estimate dag: "+str(t2)+" sec"
+    print "Total time: "+str(t1+t0+t2)+" sec"
     
 if __name__ == '__main__':
-    #butterfly_model()
-    from_file('train.csv',separator = ',')
-    #gen_lin_reg_model(3,5,999999)
-    #catgen_lrg2()
+    test_butterfly_model()
+    #from_file('train.csv',separator = ',')
+
+
     
         
            
