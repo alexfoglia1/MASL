@@ -1,6 +1,5 @@
-import itertools
-from itertools import combinations, chain
-from scipy.stats import norm, pearsonr
+from itertools import combinations
+from scipy.stats import norm
 import pandas as pd
 import numpy as np
 import math
@@ -10,26 +9,10 @@ import matplotlib.pyplot as plt
 complete = lambda n : [[1 for i in range(n)] for i in range(n)]
 rnorm = lambda n : np.random.normal(size=n) 
 
-def get_skeleton(dataset, alpha, labels,corr_matrix = None):
-    var_covar = dataset.cov().values
-    return pc_algorithm(np.linalg.pinv(var_covar), dataset.values.shape[0], alpha, labels, corr_matrix = corr_matrix)
 
-def pc_algorithm(sigma_inverse, N, alpha, labels, corr_matrix = None):
-    def tocor(vcv):
-        cm = []
-        for i in range(0,len(vcv)):
-            cm_row = []
-            for j in range(0,len(vcv[i])):
-                cov_ij = vcv[i][j]
-                sd_i = math.sqrt(vcv[i][i])
-                sd_j = math.sqrt(vcv[j][j])
-                corr_ij = cov_ij/(sd_i*sd_j)
-                cm_row.append(corr_ij)
-            cm.append(cm_row)
-        return np.array(cm)
-    if corr_matrix is None: 
-        sigma = np.linalg.pinv(sigma_inverse)
-        corr_matrix = tocor(sigma)
+def get_skeleton(dataset, alpha, labels):
+    corr_matrix = dataset.corr().values
+    N = dataset.values.shape[0]
     n = len(corr_matrix[0])
     G = complete(n)
     for i in range(n):
@@ -58,7 +41,7 @@ def pc_algorithm(sigma_inverse, N, alpha, labels, corr_matrix = None):
                 if len(neighbors) >= l:
                     if len(neighbors) > l:
                         stop = False
-                    for K in set(itertools.combinations(neighbors, l)):
+                    for K in set(combinations(neighbors, l)):
                         p_value = indep_test(corr_matrix, N, x, y, list(K))
                         if p_value >= alpha:
                             G[x][y] = 0
@@ -164,17 +147,11 @@ def plot(toplot, labels):
 
 def test_butterfly_model():
     alpha = .10
-    #varnames = varnames = ["mec","vec","alg","ana","stat"]
-    #sigma_inverse=[[1.000,0.331,0.235,0.000,0.000],
-    #               [0.553,1.000,0.327,0.000,0.000],
-    #               [0.546,0.610,1.000,0.451,0.364],
-    #               [0.388,0.433,0.711,1.000,0.256],
-    #               [0.363,0.405,0.665,0.607,1.000]]
-    dataset = pd.read_csv("marks.dat",sep="\t")
+    dataset = pd.read_csv("marks.dat",sep=",")
+    varnames = dataset.columns
     import time
     t0 = time.time()
-    (g,sep_set) = get_skeleton(dataset, alpha, dataset.columns, corr_matrix = dataset.corr().values)
-    #(g,sep_set) = pc_algorithm(np.array(sigma_inverse),999999,alpha,varnames)
+    (g,sep_set) = get_skeleton(dataset, alpha, dataset.columns)
     tf = time.time()
     print "Elapsed "+str(tf-t0)+" sec"
     print(g)
@@ -186,7 +163,7 @@ def test_butterfly_model():
 def from_file(filename, separator = ","):
     alpha = .05
     dataset = pd.read_csv(filename,sep = separator)
-    (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
+    (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns)
     print(g)
     plot(g,dataset.columns)
     g = to_cpdag(g,sep_set)
@@ -211,7 +188,7 @@ def gen_lin_reg_model(a,b,N):
                         'y': y.tolist()
                         })
     t0 = time.time()
-    (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
+    (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns)
     tf = time.time()
     delta_t1 = (tf-t0)
     print(g)
@@ -235,7 +212,7 @@ def gen_lrg2():
                        'x2': x2.tolist(),
                         'y': y.tolist()
                         })
-    (g,sep_set) = get_skeleton(dataset, alpha,dataset.columns,corr_matrix = dataset.corr().values)
+    (g,sep_set) = get_skeleton(dataset,alpha,dataset.columns)
     g = to_cpdag(g,sep_set)
     plot(g,dataset.columns)
 
@@ -248,7 +225,7 @@ def test_linear_regression():
     
 if __name__ == '__main__':
     test_butterfly_model()
-    #from_file('train.csv',separator = ',')
+    #from_file('marks.dat',separator = ',')
 
 
     
