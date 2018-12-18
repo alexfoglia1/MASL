@@ -149,11 +149,14 @@ def test_butterfly_model():
     alpha = .10
     dataset = pd.read_csv("marks.dat",sep=",")
     varnames = dataset.columns
+    deltas = 0
     import time
-    t0 = time.time()
-    (g,sep_set) = get_skeleton(dataset, alpha, dataset.columns)
-    tf = time.time()
-    print "Elapsed "+str(tf-t0)+" sec"
+    for i in range(100):
+        t0 = time.time()
+        (g,sep_set) = get_skeleton(dataset, alpha, dataset.columns)
+        tf = time.time()
+        deltas += (tf-t0)
+    print "Elapsed "+str((deltas)/100)+" sec"
     print(g)
     plot(g,varnames)
     g = to_cpdag(g,sep_set)
