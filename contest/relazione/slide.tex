@@ -58,11 +58,10 @@
 			\item define \textbf{alpha}
 			\item call \textbf{get\_skeleton} on dataset and alpha as arguments
 		\end{itemize}
-	%	\begin{figure}[h!]
-	%		\centering
-	%		\includegraphics[scale=0.5]{img/dataset.PNG}
-	%		\label{Interfacce di un CS}
-	%	\end{figure}
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[scale=0.5]{img/dataset.PNG}
+		\end{figure}
 		
 	\end{frame}
 	\begin{frame}
@@ -75,11 +74,10 @@
 	\item initalize the \textbf{separation\_set} as a list of list
 	\item initialize \textbf{l = 0}, \textbf{stop = false}
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/initialization.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/initialization.PNG}
+	\end{figure}
 
 \end{frame}
 \begin{frame}
@@ -87,11 +85,10 @@
 \begin{itemize}
 	\item define the \textbf{adj} function in order to get the adjacents of a node in a given graph
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/adj.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/adj.PNG}
+	\end{figure}
 
 \end{frame}
 \begin{frame}
@@ -101,11 +98,10 @@
 	\item retrieve dependent variables: i,j are actually dependent if the adjacence matrix[i][j] is equal to 1
 	\item call the set of dependent variables \textbf{act\_dep}
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/depvar.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/depvar.PNG}
+	\end{figure}
 
 \end{frame}
 \begin{frame}
@@ -118,11 +114,10 @@
 	\item if \textbf{neighbors} set has dimension $>$ \textbf{l} go ahead
 	\end{itemize}
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/indepvar.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/indepvar.PNG}
+	\end{figure}
 \end{frame}
 \begin{frame}
 \frametitle{Step six: conditional independence test}
@@ -135,11 +130,11 @@
 		\item set \textbf{K} as the \textbf{separation\_set[x][y]}
 	\end{itemize}
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/indeptest.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/indeptest.PNG}
+		\label{Interfacce di un CS}
+	\end{figure}
 \end{frame}
 \begin{frame}
 \frametitle{Step eight: from the skeleton to the CPDAG}
@@ -147,11 +142,11 @@
 	\item return \textbf{G} and \textbf{separation\_set}
 	\item call \textbf{to\_cpdag(G, separation\_set)}
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/tocpdag.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/tocpdag.PNG}
+		\label{Interfacce di un CS}
+	\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -160,11 +155,11 @@
 	\item define \textbf{getIndependents(adj\_matrix,reqij, reqji)}
 	\item this function retrieve all the variables i,j such that: \textbf{adj\_matrix[i][j] == reqij} and \textbf{adj\_matrix[j][i] == reqji}
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/getindep.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/getindep.PNG}
+		\label{Interfacce di un CS}
+	\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -173,25 +168,28 @@
 	\item set the \textbf{cpdag} as the skeleton
 	\item set \textbf{dip} as the set of variables i,j for which exists an edge from i to j
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/cpdaginit.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/cpdaginit.PNG}
+		\label{Interfacce di un CS}
+	\end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Step ten: rule "zero"}
+\frametitle{Step ten: rule "zero" (1)}
 \begin{itemize}
 	\item foreach pair x,y in \textbf{dip}:
 	\item add to \textbf{allZ} all the variables \textbf{z} for which exists an egde from \textbf{z} to \textbf{j} and \textbf{z is not x}
 	\item if:\\\textbf{there is no edge between x and z}\\ \textbf{there is a separation set between x and z}\\\textbf{there is a separation set between z and x}\\\textbf{y is not in separation set between x and z} or \textbf{in separation set between z and x}, then:
 	\item remove the edge from y to x and from z to y
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/rulezero.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Step ten: rule "zero" (2)}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/rulezero.PNG}
+		\label{Interfacce di un CS}
+	\end{figure}
 \end{frame}
 \begin{frame}
 \frametitle{Step eleven: apply rules}
@@ -210,13 +208,49 @@
 \begin{frame}
 \frametitle{Python vs R}
 \begin{itemize}
-	\item consider this two codes
+	\item consider this R code
 \end{itemize}
-%	\begin{figure}[h!]
-%		\centering
-%		\includegraphics[scale=0.5]{img/r.PNG}
-%		\label{Interfacce di un CS}
-%	\end{figure}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[scale=0.5]{img/r.PNG}
+	\end{figure}
+\begin{itemize}
+	\item it gives
+	\end{itemize}
 \end{frame}
-	
+\begin{frame}
+\frametitle{Python vs R}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.35]{img/rdag.PNG}
+\end{figure}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.5]{img/rtime}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Python vs R}
+\begin{itemize}
+	\item consider this python code
+	\end{itemize}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.5]{img/py.PNG}
+\end{figure}
+\begin{itemize}
+	\item it gives:
+\end{itemize}
+\end{frame}
+\begin{frame}
+\frametitle{Python vs R}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.35]{img/pydag}
+\end{figure}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.5]{img/pytime}
+\end{figure}
+\end{frame}
 \end{document}
