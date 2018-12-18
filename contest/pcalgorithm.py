@@ -10,7 +10,8 @@ complete = lambda n : [[1 for i in range(n)] for i in range(n)]
 rnorm = lambda n : np.random.normal(size=n) 
 
 
-def get_skeleton(dataset, alpha, labels):
+def get_skeleton(dataset, alpha):
+    labels = dataset.columns
     corr_matrix = dataset.corr().values
     N = dataset.values.shape[0]
     n = len(corr_matrix[0])
@@ -148,20 +149,17 @@ def plot(toplot, labels):
 def test_butterfly_model():
     alpha = .10
     dataset = pd.read_csv("marks.dat",sep=",")
-    varnames = dataset.columns
     deltas = 0
     import time
     for i in range(100):
         t0 = time.time()
-        (g,sep_set) = get_skeleton(dataset, alpha, dataset.columns)
+        (g,sep_set) = get_skeleton(dataset, alpha)
+        g = to_cpdag(g,sep_set)
         tf = time.time()
         deltas += (tf-t0)
     print "Elapsed "+str((deltas)/100)+" sec"
-    print(g)
-    plot(g,varnames)
-    g = to_cpdag(g,sep_set)
-    print(g)
-    plot(g,varnames)
+    plot(g,dataset.columns)
+
 
 def from_file(filename, separator = ","):
     alpha = .05
