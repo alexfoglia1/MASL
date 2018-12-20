@@ -157,7 +157,7 @@ def test_butterfly_model():
         g = to_cpdag(g,sep_set)
         tf = time.time()
         deltas += (tf-t0)
-    print "Elapsed "+str((deltas)/100)+" sec"
+    print ("Elapsed "+str((deltas)/100)+" sec")
     plot(g,dataset.columns)
 
 

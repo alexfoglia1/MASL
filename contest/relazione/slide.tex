@@ -208,9 +208,9 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Step 8: define the getIndependents() function}
+\frametitle{Step 8: define the getDependents() function}
 \begin{itemize}
-	\item Define \textbf{getIndependents(adj\_matrix,reqij, reqji)};
+	\item Define \textbf{getDependents(adj\_matrix,reqij, reqji)};
 	\item this function retrieve all the variables i,j such that: \textbf{adj\_matrix[i][j] == reqij} and \textbf{adj\_matrix[j][i] == reqji}.
 \end{itemize}
 	\begin{figure}[h!]
@@ -224,7 +224,7 @@
 \frametitle{Step 9: CPDAG initialization}
 \begin{itemize}
 	\item Set the \textbf{cpdag} as the skeleton;
-	\item set \textbf{dip} as the set of variables i,j for which exists an edge from i to j.
+	\item set \textbf{dep} as the set of variables i,j for which exists an edge from i to j.
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
@@ -236,7 +236,7 @@
 \frametitle{Step 10: rule "zero" (1)}
 \begin{itemize}
 	\item For each pair x,y in \textbf{dip}:
-	\item add to \textbf{allZ} all the variables \textbf{z} for which exists an egde from \textbf{z} to \textbf{j} and \textbf{z is not x};
+	\item add to \textbf{allZ} all the variables \textbf{z} for which exists an egde from \textbf{z} to \textbf{y} and \textbf{z is not x};
 	\item if:\\\textbf{there is no edge between x and z}\\ \textbf{there is a separation set between x and z}\\\textbf{there is a separation set between z and x}\\\textbf{y is not in separation set between x and z} or \textbf{in separation set between z and x}, then:
 	\item remove the edge from y to x and from z to y.
 \end{itemize}
