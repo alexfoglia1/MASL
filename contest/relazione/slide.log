@@ -1,4 +1,4 @@
-This is LuaTeX, Version 1.0.4 (TeX Live 2017/Debian)  (format=lualatex 2018.12.9)  20 DEC 2018 13:49
+This is LuaTeX, Version 1.0.4 (TeX Live 2017/Debian)  (format=lualatex 2018.12.9)  20 DEC 2018 14:18
  restricted system commands enabled.
 **slide.tex
 (./slide.tex
@@ -1372,12 +1372,12 @@ Package luatex.def Info: img/py.PNG  used on input line 307.
  [20
 
 <./img/py.PNG>]
-<img/pydag.png, id=602, 462.528pt x 346.896pt>
+<img/pydag.png, id=603, 462.528pt x 346.896pt>
 File: img/pydag.png Graphic file (type png)
 <use img/pydag.png>
 Package luatex.def Info: img/pydag.png  used on input line 318.
 (luatex.def)             Requested size: 185.0079pt x 138.75594pt.
-<img/pytime.PNG, id=603, 364.36125pt x 24.84282pt>
+<img/pytime.PNG, id=604, 364.36125pt x 24.84282pt>
 File: img/pytime.PNG Graphic file (type png)
 <use img/pytime.PNG>
 Package luatex.def Info: img/pytime.PNG  used on input line 318.
@@ -1386,6 +1386,14 @@ Package luatex.def Info: img/pytime.PNG  used on input line 318.
 [21
 
 <./img/pydag.png><./img/pytime.PNG>]
+<img/github.PNG, id=634, 1371.1225pt x 770.88pt>
+File: img/github.PNG Graphic file (type png)
+<use img/github.PNG>
+Package luatex.def Info: img/github.PNG  used on input line 329.
+(luatex.def)             Requested size: 205.6595pt x 115.627pt.
+ [22
+
+<./img/github.PNG>]
 \tf@nav=\write6
 
 \openout6 = slide.nav
@@ -1395,11 +1403,11 @@ Package luatex.def Info: img/pytime.PNG  used on input line 318.
 \tf@snm=\write8
 
 \openout8 = slide.snm
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 319.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 319.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 330.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 330.
  (./slide.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 319.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 319.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 330.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 330.
 Package rerunfilecheck Info: File `slide.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
@@ -1409,14 +1417,14 @@ LaTeX Warning: There were multiply-defined labels.
 )
 
 Here is how much of LuaTeX's memory you used:
- 23212 strings out of 494480
+ 23226 strings out of 494480
  100000,552014 words of node,token memory allocated
- 2079 words of node memory still in use:
-   62 hlist, 15 vlist, 9 rule, 1 disc, 9 local_par, 78 glue, 5 kern, 28 penalty,
- 10 glyph, 63 glue_spec, 3 write, 32 pdf_colorstack, 2 pdf_setmatrix, 2 pdf_save
-, 2 pdf_restore nodes
-   avail lists: 1:4,2:27,3:701,4:142,5:201,6:1077,7:548,8:51,9:407,10:17,11:153
- 25821 multiletter control sequences out of 65536+600000
+ 2410 words of node memory still in use:
+   55 hlist, 15 vlist, 8 rule, 9 disc, 9 local_par, 76 glue, 8 kern, 25 penalty,
+ 61 glyph, 63 glue_spec, 3 write, 1 pdf_start_link, 1 pdf_end_link, 1 pdf_action
+, 34 pdf_colorstack, 1 pdf_setmatrix, 1 pdf_save, 1 pdf_restore nodes
+   avail lists: 1:4,2:27,3:706,4:140,5:198,6:1025,7:550,8:51,9:414,10:17,11:145
+ 25827 multiletter control sequences out of 65536+600000
  182 fonts using 7530367 bytes
  55i,15n,59p,798b,930s stack positions out of 5000i,500n,10000p,200000b,100000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/t
@@ -1425,10 +1433,10 @@ st/fonts/type1/public/txfonts/rtxmi.pfb></usr/share/texlive/texmf-dist/fonts/typ
 e1/public/txfonts/txsy.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txf
 onts/txsyc.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pf
 b></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on slide.pdf (21 pages, 170771 bytes).
+Output written on slide.pdf (22 pages, 195364 bytes).
 
-PDF statistics: 660 PDF objects out of 1000 (max. 8388607)
- 584 compressed objects within 6 object streams
- 44 named destinations out of 1000 (max. 131072)
+PDF statistics: 690 PDF objects out of 1000 (max. 8388607)
+ 611 compressed objects within 7 object streams
+ 46 named destinations out of 1000 (max. 131072)
  34 words of extra memory for PDF output out of 10000 (max. 100000000)
 
