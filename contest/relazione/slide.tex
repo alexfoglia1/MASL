@@ -7,7 +7,7 @@
 \author{Authors: Alex Foglia, Tommaso Puccetti}
 \institute{Universit\`a  degli Studi di Firenze}
 \date{21/12/2018}
-\usepackage{sansmathaccent}
+%\usepackage{sansmathaccent}
 \usetheme{Berlin} 
 \useinnertheme{rounded}
 \useoutertheme{miniframes} 
@@ -32,10 +32,11 @@
 
 	\begin{frame}
 		\frametitle{Theoretical references (2)}
-		Let $G = (V,E)$ be a DAG relative to a finite set  $X = \{X_v \forall v \in V\}$ of casual variables, then:
+		Let $G = (V,E)$ be a DAG relative to a finite set  $X = \{X_{v}, v \in V\}$ of casual variables, then:
 		$$
-		\forall u,v \in V \;non\;adjacent\;| v \in nd(u) \Rightarrow u \Perp v | nd(u) - v
+		\forall u,v \in V \;non\;adjacent\;| v \in nd(u) \Rightarrow 
 		$$
+		$$\Rightarrow u \Perp v | nd(u) - v $$
 	Where $nd(u)$ is the set of \textbf{non-descendant} n of n, that are all those nodes $u'$ for which there is no path from $u$ to $u'$. \\
 	\end{frame}
 
@@ -60,7 +61,7 @@
 		\end{itemize}
 		\begin{figure}[h!]
 			\centering
-			\includegraphics[scale=0.5]{img/dataset.PNG}
+			\includegraphics[scale=0.82]{img/dataset.PNG}
 		\end{figure}
 		
 	\end{frame}
@@ -76,18 +77,18 @@
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/initialization.PNG}
+		\includegraphics[scale=0.52]{img/initialization.PNG}
 	\end{figure}
 
 \end{frame}
 \begin{frame}
 \frametitle{Step three: define adj function}
 \begin{itemize}
-	\item define the \textbf{adj} function in order to get the adjacents of a node in a given graph
+	\item define the \textbf{adj()} function in order to get the adjacents of a node in a given graph.
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/adj.PNG}
+		\includegraphics[scale=0.9]{img/adj.PNG}
 	\end{figure}
 
 \end{frame}
@@ -100,7 +101,7 @@
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/depvar.PNG}
+		\includegraphics[scale=0.8]{img/depvar.PNG}
 	\end{figure}
 
 \end{frame}
@@ -116,7 +117,7 @@
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/indepvar.PNG}
+		\includegraphics[scale=0.8]{img/indepvar.PNG}
 	\end{figure}
 \end{frame}
 \begin{frame}
@@ -132,7 +133,7 @@
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/indeptest.PNG}
+		\includegraphics[scale=0.6]{img/indeptest.PNG}
 		\label{Interfacce di un CS}
 	\end{figure}
 \end{frame}
@@ -144,7 +145,7 @@
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/tocpdag.PNG}
+		\includegraphics[scale=0.75]{img/tocpdag.PNG}
 		\label{Interfacce di un CS}
 	\end{figure}
 \end{frame}
@@ -157,7 +158,7 @@
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/getindep.PNG}
+		\includegraphics[scale=0.57]{img/getindep.PNG}
 		\label{Interfacce di un CS}
 	\end{figure}
 \end{frame}
@@ -170,7 +171,7 @@
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/cpdaginit.PNG}
+		\includegraphics[scale=0.8]{img/cpdaginit.PNG}
 		\label{Interfacce di un CS}
 	\end{figure}
 \end{frame}
@@ -187,7 +188,7 @@
 \frametitle{Step ten: rule "zero" (2)}
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=0.5]{img/rulezero.PNG}
+		\includegraphics[scale=0.52]{img/rulezero.PNG}
 		\label{Interfacce di un CS}
 	\end{figure}
 \end{frame}
@@ -236,7 +237,7 @@
 	\end{itemize}
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale=0.5]{img/py.PNG}
+	\includegraphics[scale=0.7]{img/py.PNG}
 \end{figure}
 \begin{itemize}
 	\item it gives:
@@ -246,11 +247,11 @@
 \frametitle{Python vs R}
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale=0.35]{img/pydag}
+	\includegraphics[scale=0.4]{img/pydag}
 \end{figure}
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale=0.5]{img/pytime}
+	\includegraphics[scale=0.8]{img/pytime}
 \end{figure}
 \end{frame}
 \end{document}
