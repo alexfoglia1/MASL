@@ -169,13 +169,12 @@ def from_file(filename, separator = ","):
     print(g)
     plot(g,dataset.columns)
 
-def gen_lin_reg_model(a,b,N):
-    alpha = .10
+def gen_lin_reg_model(a,b,N,alpha):
     x1 = rnorm(N)
     x2 = a*x1+rnorm(N)
     x3 = a*x1+rnorm(N)
     x4 = a*x1+rnorm(N)
-    y = b*x2 + b*x3 + b*x4 + rnorm(N) + 5
+    y = b*x2 + b*x3 + b*x4 + rnorm(N)
     dataset = pd.DataFrame({'x1': x1.tolist(),
                        'x2': x2.tolist(),
                        'x3': x3.tolist(),
@@ -187,11 +186,6 @@ def gen_lin_reg_model(a,b,N):
     plot(g,dataset.columns)
     
 if __name__ == '__main__':
-    #gen_lin_reg_model(3,5,99999)
-    from_file("software.csv")
-
-
-    
-        
-           
-    
+    #test_butterfly_model()
+    gen_lin_reg_model(1,1,9999,0.01)
+    #from_file("software.csv")
