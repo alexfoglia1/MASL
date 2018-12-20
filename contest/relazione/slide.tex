@@ -14,7 +14,9 @@
 \setbeamercovered{dynamic}
 \theoremstyle{definition}
 \newtheorem{definizione}{Definizione}
-
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{subfigure}
 \begin{document}
 	
 	\begin{frame}
@@ -24,8 +26,8 @@
 	\begin{frame}
 		\frametitle{Theoretical references (1)}
 		\begin{itemize}
-			\item Bayesian Networks can be rappresented as a \textbf{directed acyclic graph (DAG)}
-			\item "acyclic" means that there are no paths starting from a node $v$ that ends with $v$ itself, $\forall v \in G$
+			\item Bayesian Networks can be rappresented as a \textbf{directed acyclic graph (DAG)};
+			\item "acyclic" means that there are no paths starting from a node $v$ that ends with $v$ itself, $\forall v \in G$.
 			
 		\end{itemize}
 	\end{frame}
@@ -34,30 +36,85 @@
 		\frametitle{Theoretical references (2)}
 		Let $G = (V,E)$ be a DAG relative to a finite set  $X = \{X_{v}, v \in V\}$ of casual variables, then:
 		$$
-		\forall u,v \in V \;non\;adjacent\;| v \in nd(u) \Rightarrow 
+		\forall\; u,v \in V \;non\;adjacent\;|\; v \in nd(u) \Rightarrow 
 		$$
-		$$\Rightarrow u \Perp v | nd(u) - v $$
-	Where $nd(u)$ is the set of \textbf{non-descendant} n of n, that are all those nodes $u'$ for which there is no path from $u$ to $u'$. \\
+		$$\Rightarrow u \Perp v \;|\; nd(u) - v $$
+	Where $nd(u)$ is the set of \textbf{non-descendant} nodes of u, that are all those nodes $u'$ for which there is no path from $u$ to $u'$. \\
 	\end{frame}
+
+	\begin{frame}
+		\frametitle{Theoretical references (3)}
+		\begin{figure}
+			\centering
+			\subfigure[$2 \Perp 3\;|\; 1$]
+			{\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
+				thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
+				
+				\node[main node] (1) {1};
+				\node[main node] (2) [below left of=1] {2};
+				\node[main node] (3) [below right of=1] {3};
+				
+				\path[every node/.style={font=\sffamily\small}]
+				
+				(1) edge [right] node[left] {} (2)
+				edge [right] node[left] {} (3);
+				
+				\end{tikzpicture}}
+			\hspace{5mm}
+			\subfigure[$2 \Perp 3\;|\; 1$]
+			{\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
+				thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
+				
+				\node[main node] (1) {1};
+				\node[main node] (2) [below left of=1] {2};
+				\node[main node] (3) [below right of=1] {3};
+				
+				\path[every node/.style={font=\sffamily\small}]
+				
+				(1) edge [right] node[left] {} (2)
+				(3)edge [right] node[right] {} (1);
+				
+				\end{tikzpicture}}
+			\hspace{5mm}
+			\subfigure[$2 \not\Perp 3\;|\; 1  $  ]{\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2cm,
+				thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
+				
+				\node[main node] (1) {1};
+				\node[main node] (2) [below left of=1] {2};
+				\node[main node] (3) [below right of=1] {3};
+				
+				\path[every node/.style={font=\sffamily\small}]
+				
+				(2) edge [right] node[left] {} (1)
+				(3) edge [right] node[left] {} (1);
+				
+				\end{tikzpicture}}
+		\end{figure}
+		
+		\begin{figure}
+			
+		\end{figure}
+	\end{frame}
+
 
 	\begin{frame}
 		\frametitle{PC-Algorithm}
 		Given a set of variables with a joint Gaussian probability distribution, it is possible to learn the DAG closer to the sample through the use of  \textbf{PC-Algorithm}. \\
 		It is composed of two sub-functions that solve two different problems:
 		\begin{enumerate}
-			\item The construction of the skeleton (or \textbf{Moral Graph})
-			\item The construction of the DAG from a given skeleton
+			\item The construction of the \textbf{skeleton} from the moral graph;
+			\item The construction of the DAG from a given skeleton.
 		\end{enumerate}
 	\end{frame}
 
 
 	\begin{frame}
-		\frametitle{Step one: read the dataset}
+		\frametitle{Step 1: read the dataset}
 		\begin{itemize}
-			\item import \textbf{pandas} library
-			\item call \textbf{pandas.read$\_$csv()} function to read dataset
-			\item define \textbf{alpha}
-			\item call \textbf{get\_skeleton} on dataset and alpha as arguments
+			\item Import \textbf{pandas} library;
+			\item call \textbf{pandas.read$\_$csv()} function to read dataset;
+			\item define \textbf{alpha};
+			\item call \textbf{get\_skeleton} on dataset and alpha as arguments.
 		\end{itemize}
 		\begin{figure}[h!]
 			\centering
@@ -66,14 +123,14 @@
 		
 	\end{frame}
 	\begin{frame}
-\frametitle{Step two: initialization}
+\frametitle{Step 2: initialization}
 \begin{itemize}
-	\item read names of the dataset variables accessing \textbf{dataset.columns} field
-	\item retrieve the correlation matrix of the given dataset with \textbf{dataset.corr().values}
-	\item initialize \textbf{N,n} as the number of sampling and the number of variables
-	\item initialize \textbf{G} as the complete graph of dimension n
-	\item initalize the \textbf{separation\_set} as a list of list
-	\item initialize \textbf{l = 0}, \textbf{stop = false}
+	\item Read names of the dataset variables accessing \textbf{dataset.columns} field;
+	\item retrieve the correlation matrix of the given dataset with \textbf{dataset.corr().values};
+	\item initialize \textbf{N,n} as the number of sampling and the number of variables;
+	\item initialize \textbf{G} as the complete graph of dimension n;
+	\item initalize the \textbf{separation\_set} as a list of list;
+	\item initialize \textbf{l = 0}, \textbf{stop = false}.
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
@@ -82,9 +139,9 @@
 
 \end{frame}
 \begin{frame}
-\frametitle{Step three: define adj function}
+\frametitle{Step 3: define adj function}
 \begin{itemize}
-	\item define the \textbf{adj()} function in order to get the adjacents of a node in a given graph.
+	\item Define the \textbf{adj()} function in order to get the adjacents of a node in a given graph.
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
@@ -93,7 +150,7 @@
 
 \end{frame}
 \begin{frame}
-\frametitle{Step four: how many variables are actually dependent?}
+\frametitle{Step 4: how many variables are actually dependent?}
 \begin{itemize}
 	\item set stop condition to true
 	\item retrieve dependent variables: i,j are actually dependent if the adjacence matrix[i][j] is equal to 1
@@ -106,13 +163,13 @@
 
 \end{frame}
 \begin{frame}
-\frametitle{Step five: variables needed for independence test}
+\frametitle{Step 5: variables needed for independence test}
 \begin{itemize}
-	\item for \textbf{x,y} in \textbf{act\_dep}
-	\item retrieve the \textbf{neighbors} of \textbf{x} calling the \textbf{adj()} function
-	\item remove y from the \textbf{neighbors} set
+	\item For \textbf{x,y} in \textbf{act\_dep};
+	\item retrieve the \textbf{neighbors} of \textbf{x} calling the \textbf{adj()} function;
+	\item remove y from the \textbf{neighbors} set;
 	\item if \textbf{neighbors} set has dimension $\ge$ \textbf{l} then \begin{itemize}
-	\item if \textbf{neighbors} set has dimension $>$ \textbf{l} go ahead
+	\item if \textbf{neighbors} set has dimension $>$ \textbf{l} go ahead.
 	\end{itemize}
 \end{itemize}
 	\begin{figure}[h!]
@@ -121,14 +178,14 @@
 	\end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Step six: conditional independence test}
+\frametitle{Step 6: conditional independence test}
 \begin{itemize}
-	\item foreach set \textbf{K} of neighbors of dimension \textbf{l}
-	\item test independence of \textbf{x} and \textbf{y} given \textbf{K}
+	\item Foreach set \textbf{K} of neighbors of dimension \textbf{l};
+	\item test independence of \textbf{x} and \textbf{y} given \textbf{K};
 	\item if the p value is greater than \textbf{alpha}:
 	\begin{itemize}
-		\item remove the edge x,y setting \textbf{G[x][y] = 0}
-		\item set \textbf{K} as the \textbf{separation\_set[x][y]}
+		\item remove the edge x,y setting \textbf{G[x][y] = 0};
+		\item set \textbf{K} as the \textbf{separation\_set[x][y]}.
 	\end{itemize}
 \end{itemize}
 	\begin{figure}[h!]
@@ -138,10 +195,10 @@
 	\end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Step eight: from the skeleton to the CPDAG}
+\frametitle{Step 7: from the skeleton to the CPDAG}
 \begin{itemize}
-	\item return \textbf{G} and \textbf{separation\_set}
-	\item call \textbf{to\_cpdag(G, separation\_set)}
+	\item Return \textbf{G} and \textbf{separation\_set};
+	\item call \textbf{to\_cpdag(G, separation\_set)}.
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
@@ -151,10 +208,10 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Step eight: define the getIndependents() function}
+\frametitle{Step 8: define the getIndependents() function}
 \begin{itemize}
-	\item define \textbf{getIndependents(adj\_matrix,reqij, reqji)}
-	\item this function retrieve all the variables i,j such that: \textbf{adj\_matrix[i][j] == reqij} and \textbf{adj\_matrix[j][i] == reqji}
+	\item Define \textbf{getIndependents(adj\_matrix,reqij, reqji)};
+	\item this function retrieve all the variables i,j such that: \textbf{adj\_matrix[i][j] == reqij} and \textbf{adj\_matrix[j][i] == reqji}.
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
@@ -164,10 +221,10 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Step nine: CPDAG initialization}
+\frametitle{Step 9: CPDAG initialization}
 \begin{itemize}
-	\item set the \textbf{cpdag} as the skeleton
-	\item set \textbf{dip} as the set of variables i,j for which exists an edge from i to j
+	\item Set the \textbf{cpdag} as the skeleton;
+	\item set \textbf{dip} as the set of variables i,j for which exists an edge from i to j.
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
@@ -176,16 +233,16 @@
 	\end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Step ten: rule "zero" (1)}
+\frametitle{Step 10: rule "zero" (1)}
 \begin{itemize}
-	\item foreach pair x,y in \textbf{dip}:
-	\item add to \textbf{allZ} all the variables \textbf{z} for which exists an egde from \textbf{z} to \textbf{j} and \textbf{z is not x}
+	\item For each pair x,y in \textbf{dip}:
+	\item add to \textbf{allZ} all the variables \textbf{z} for which exists an egde from \textbf{z} to \textbf{j} and \textbf{z is not x};
 	\item if:\\\textbf{there is no edge between x and z}\\ \textbf{there is a separation set between x and z}\\\textbf{there is a separation set between z and x}\\\textbf{y is not in separation set between x and z} or \textbf{in separation set between z and x}, then:
-	\item remove the edge from y to x and from z to y
+	\item remove the edge from y to x and from z to y.
 \end{itemize}
 \end{frame}
 \begin{frame}
-\frametitle{Step ten: rule "zero" (2)}
+\frametitle{Step 10: rule "zero" (2)}
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[scale=0.52]{img/rulezero.PNG}
@@ -193,11 +250,16 @@
 	\end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Step eleven: apply rules}
+\frametitle{Step 11: apply rules}
 \begin{itemize}
-	\item using the same logic we apply the known rules 1,2 and 3
-	\item return the resulting cpdag
-	\item using \textbf{matplotlib} and \textbf{networkx} we are able to plot the resulting cpdag
+	\item Using the same logic we apply the known rules 1,2 and 3;
+	\begin{itemize}
+		\item \textbf{Rule 1:} orient $j\;-\;k$ into $j \rightarrow k$ whenever there is an arrow  $i \rightarrow j$ such that $i$ and $k$ are not adjacent;
+		\item \textbf{Rule 2:} orient $i\;-\;j$ into $i \rightarrow j$ whenever there is a chain $i \rightarrow k \rightarrow j$;
+		\item \textbf{Rule 3:} orient $i\;-\;j$ into $i \rightarrow j$ whenever there are two chains $i \rightarrow k \rightarrow j$ and $i \rightarrow l \rightarrow j$ such that k and l are nonadjacent.
+	\end{itemize}
+	\item Return the resulting cpdag;
+	\item using \textbf{matplotlib} and \textbf{networkx} we are able to plot the resulting cpdag.
 \end{itemize}
 %	\begin{figure}[h!]
 %		\centering
@@ -209,14 +271,14 @@
 \begin{frame}
 \frametitle{Python vs R}
 \begin{itemize}
-	\item consider this R code
+	\item Consider this R code:
 \end{itemize}
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[scale=0.5]{img/r.PNG}
 	\end{figure}
 \begin{itemize}
-	\item it gives
+	\item it gives:
 	\end{itemize}
 \end{frame}
 \begin{frame}
@@ -233,7 +295,7 @@
 \begin{frame}
 \frametitle{Python vs R}
 \begin{itemize}
-	\item consider this python code
+	\item Consider this python code:
 	\end{itemize}
 \begin{figure}[h!]
 	\centering
