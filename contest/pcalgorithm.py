@@ -66,16 +66,16 @@ def indep_test(CM, n, i, j, K):
     return 2 * (1 - norm.cdf(abs(res)))
 
 def to_cpdag(skeleton, sep_set):
-    def getIndependents(cpdag,reqij,reqji):
-        ind = []
+    def getDependents(cpdag,reqij,reqji):
+        dep = []
         for i in range(len(cpdag)):
             for j in range(len(cpdag)):
                 if cpdag[i][j] == reqij and (reqji == None or cpdag[j][i] == reqji):
-                    ind.append((i,j))
-        return sorted(ind, key = lambda z:(z[1],z[0]))
+                    dep.append((i,j))
+        return sorted(dep, key = lambda z:(z[1],z[0]))
     cpdag = skeleton.tolist()
-    ind = getIndependents(skeleton,1,None)
-    for x, y in ind:
+    dep = getDependents(skeleton,1,None)
+    for x, y in dep:
         allZ = []
         for z in range(len(cpdag)):
             if skeleton[y][z] == 1 and z != x:
@@ -87,8 +87,8 @@ def to_cpdag(skeleton, sep_set):
                 cpdag[y][x] = cpdag[y][z] = 0
     #rule 1
     search = list(cpdag)
-    ind = getIndependents(cpdag,1,0)
-    for a,b in ind:
+    dep = getDependents(cpdag,1,0)
+    for a,b in dep:
         found = []
         for i in range(len(search)):
             if (search[b][i] == 1 and search[i][b] == 1) and (search[a][i] == 0 and search[i][a] == 0):
@@ -103,8 +103,8 @@ def to_cpdag(skeleton, sep_set):
                     cpdag[c][b] = 2
     #rule2
     search = list(cpdag)
-    ind = getIndependents(cpdag,1,1)
-    for a, b in ind:
+    dep = getDependents(cpdag,1,1)
+    for a, b in dep:
         found = []
         for i in range(len(search)):
             if (search[a][i] == 1 and search[i][a] == 0) and (search[i][b] == 1 and search[b][i] == 0):
@@ -117,8 +117,8 @@ def to_cpdag(skeleton, sep_set):
                 cpdag[a][b] = cpdag[b][a] = 2    
     #rule3
     search = list(cpdag)
-    ind = getIndependents(cpdag,1,1)
-    for a, b in ind:
+    dep = getDependents(cpdag,1,1)
+    for a, b in dep:
         found = []
         for i in range(len(search)):
             if (search[a][i] == 1 and search[i][a] == 1) and (search[i][b] == 1 and search[b][i] == 0):
@@ -186,6 +186,6 @@ def gen_lin_reg_model(a,b,N,alpha):
     plot(g,dataset.columns)
     
 if __name__ == '__main__':
-    #test_butterfly_model()
+    test_butterfly_model()
     gen_lin_reg_model(1,1,9999,0.01)
-    #from_file("software.csv")
+    from_file("software.csv")
