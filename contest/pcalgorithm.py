@@ -187,5 +187,5 @@ def gen_lin_reg_model(a,b,N,alpha):
     
 if __name__ == '__main__':
     test_butterfly_model()
-    gen_lin_reg_model(1,1,9999,0.01)
-    from_file("software.csv")
+    #gen_lin_reg_model(1,1,9999,0.01)
+    #from_file("software.csv")
