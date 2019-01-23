@@ -1,7 +1,0 @@
-\contentsline {section}{\numberline {1}Introduction}{2}
-\contentsline {section}{\numberline {2}NN and Linear Regression Model}{2}
-\contentsline {section}{\numberline {3}Logistic Regression: Perceptrons}{3}
-\contentsline {section}{\numberline {4}Nonlinear Regression: Multilayer Perceptrons}{4}
-\contentsline {section}{\numberline {5}Java Implementation}{4}
-\contentsline {subsection}{\numberline {5.1}MLP Training and Utilization}{11}
-\contentsline {section}{\numberline {6}Conclusions}{12}
