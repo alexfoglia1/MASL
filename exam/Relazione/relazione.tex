@@ -30,18 +30,17 @@
 	showspaces=false,                
 	showstringspaces=false,
 	showtabs=false,                  
-	tabsize=2
+	tabsize=4
 }
 \lstset{style=mystyle}
 \lstset{language=Java}
 \usepackage[height=24.0cm]{geometry}
 \author{Alex Foglia}
 \title{Neural Networks and Statistical Models: A Java Implementation}
+\date{}
 \begin{document}
 	\maketitle
-	\tableofcontents
-	\newpage
-	\section{Introduction}
+	\paragraph{Introduction}
 	An Artificial Neural Network is a \emph{computational model} composed of a set of simpler and conceptually atomic sub-models called neurons, which goal is to simulate a biological brain, in particular the ability of this to learn. From a statistical point of view, Artificial Neural Networks (from here on, NN) are a wide class of nonlinear regression models, data reduction models, and \emph{non-linear} dynamical systems.\\*
 	Neurons consist in interconnected computing elements (i.e. a neuron may compute a linear combination of some inputs) and they are often organized into \emph{layers}. For these reasons, it is convenient to graphically represent a NN through a directed graph, keeping in mind that represent a NN model means to represent a model that nothing has to do with \emph{Bayesian Networks}, always represented through a directed (acyclic) graph.\\*
 	The alleged "intelligence" of a NN is a matter of dispute, since networks, like many statistical methods, are capable of processing vast amounts of data and making predictions, but this does not make them "intelligent" in the usual sense of the word. What engineers and computer scientists call "learning" is just what it is called "estimation" in the statistical jargon.\\*
@@ -85,7 +84,7 @@
 		\hline 
 	\end{tabular} \\*\\*
 	Terms like \emph{sample} and \emph{population} does not have NN equivalents, but data are often divided into a \emph{training set} and \emph{test set} for cross-validation.
-	\section{NN and Linear Regression Model}
+	\paragraph{NN and Linear Regression Model}
 	Linear regression models are simple statistical models used to predict the expected value of a \emph{dependent variable} $\textbf{Y}$ given a set of \emph{observed variables} $\textbf{X}$. The model is the following:
 	$$
 	\textbf{Y}_i = \beta_0 + \beta_1 \textbf{X}_i + \varepsilon_i
@@ -104,9 +103,9 @@
 	Arrows indicate that the source of the arrow is an argument of the function computed at the destination of the arrow, and usually each arrow has a corresponding \emph{weight} (parameter in statistical jargon) to be estimated.\\*
 	Two long parallel lines indicate that the values at each end are to be fitted by the ordinary least square method, or some other estimation criterion.\\*
 	Such a NN represents the Linear Regression Model in the NN Jargon.
-	\section{Logistic Regression: Perceptrons}
+	\paragraph{Logistic Regression: Perceptrons}
 	A perceptron is a very small NN, composed by more than one neuron, and it usually computes a linear combination of the inputs.
-	A perceptron has $n>0$ output. Each output has a specific \emph{weight} $\beta_i$. The \emph{weights} are the parameters to be estimated. In order to estimate $\beta_i$ parameters, it is used a specific \emph{activation function} which usually maps any real input to a bounded range. Bounded activation functions are called \emph{squashing functions}, for instance the logistic function:
+	A perceptron has $n>0$ input. Each input has a specific \emph{weight} $\beta_i$. The \emph{weights} are the parameters to be estimated. In order to estimate $\beta_i$ parameters, it is used a specific \emph{activation function} which usually maps any real input to a bounded range. Bounded activation functions are called \emph{squashing functions}, for instance the logistic function:
 	$$
 	\texttt{act}(x) = \dfrac{1}{1+e^{-x}}
 	$$
@@ -131,14 +130,14 @@
 	The following perceptron with a logistic activation function is a logistic regression model:
 		\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=1.7]{img/logreg}
-	\end{figure}\newpage
-	\section{Nonlinear Regression: Multilayer Perceptrons}
-	In the introduction section, it exposed that neurons are often organized into \emph{layers}. NN seen before are simple perceptrons composed of two layers: the input layer and the output layer. If it is introduced another \emph{hidden} layer between input and output, you obtain a multi-layer perceptron (MLP).\\*
+		\includegraphics[scale=1.4]{img/logreg}
+	\end{figure}
+	\paragraph{Nonlinear Regression: Multilayer Perceptrons}
+	In the introduction section, it is exposed that neurons are often organized into \emph{layers}. NN seen before are simple perceptrons composed of two layers: the input layer and the output layer. If it is introduced another \emph{hidden} layer between input and output, you obtain a multi-layer perceptron (MLP).\\*
 	If the model includes estimated weights between the inputs and the hidden layer, and the hidden layer uses nonlinear activation functions such as the logistic function, the model becomes nonlinear.\\*
 		\begin{figure}[h!]
 		\centering
-		\includegraphics[scale=2.5]{img/nonlinreg}
+		\includegraphics[scale=1.4]{img/nonlinreg}
 	\end{figure}\\*
 	This is a simple MLP implementing a non linear regression model:
 	$$
@@ -146,7 +145,7 @@
 	$$
 	MLP are general-purpose, flexible, nonlinear models that can approximate
 	virtually any function to any desired degree of accuracy. MLP are called \emph{universal approximators} and they can be used when you have little knowledge about the relationship between the independent and dependent variables.
-	\section{Java Implementation}
+	\paragraph{Java Implementation}
 	Start from the linear regression model:
 	$$
 	\textbf{Y}_i = \beta_0 + \beta_1 \textbf{X}_i + \varepsilon_i
@@ -210,8 +209,7 @@ private double var(double[] x, double[] y) {
 Suppose it exists a sample \textbf{X} for which it is known that all the values of the dependent variable \textbf{Y} are on the bisector of the second quadrant of the Cartesian plane:
 $$
 \textbf{X} = \{X_i\} = \{1,2,3,4,5\}
-$$
-$$
+\;\;
 \textbf{Y} = \{Y_i\} = \{1,2,3,4,5\}
 $$
 \begin{lstlisting}[language = Java]
@@ -220,10 +218,7 @@ y.estimateParameters(new double[]{1,2,3,4,5}, new double[]{1,2,3,4,5});
 System.out.println(y.predict(7));
 System.out.println("Y=" + y.b0 + "+" + y.b1+"X");
 \end{lstlisting}
-As it is expected, even if in the \emph{training set} does not appear the expected output for value $7$, our linear regression model is able to predict the output for such a value:
-\begin{lstlisting}
-7.0
-\end{lstlisting}
+As it is expected, even if in the \emph{training set} does not appear the expected output for value $7$, our linear regression model is able to predict the output for such a value: \texttt{7.0}.
 In fact the regression line is exactly the requested identity function:
 \begin{lstlisting}
 Y = 0.0 + 1.0X
@@ -312,29 +307,35 @@ private double logistic(double x) {
 	return 1 / (1 + Math.exp(-x));
 }
 \end{lstlisting}
-Which is:
-$$
-\frac{1}{1+e^{-x}}
-$$
-But in the python code, it is used:
-$$
-\frac{e^{-x}}{1+e^{-x}}
-$$
-For which it is:
-$$
-\frac{e^{-x}}{1+e^{-x}} = \frac{1}{1 + e^x}
-$$
-A simple try:
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=2]{img/logregpred}
-	\label{fig:logregpred}
-\end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.7\linewidth]{img/logregpredpython}
-	\label{fig:logregpredpy}
-\end{figure}\newpage \noindent
+Which is
+$
+\dfrac{1}{1+e^{-x}}
+$
+ but in the python code, it is used
+$
+\dfrac{e^{-x}}{1+e^{-x}}
+$
+ for which it is:
+$
+\dfrac{e^{-x}}{1+e^{-x}} = \dfrac{1}{1 + e^x}
+$
+Here it follows a simple trial:
+\begin{lstlisting}
+public static void main(String[] args){
+	Neuron n = new Neuron(2);
+	//estimate parameters as above
+	System.out.println(n.predict(new double[] {17,21}));
+}
+\end{lstlisting}
+\begin{lstlisting}
+2.3802664086944176E-26
+\end{lstlisting}
+And the python output which computes the exact function we are approximating is:
+\begin{lstlisting}[language=Python]
+print squash([17,21])
+2.3802664086944176E-26
+\end{lstlisting}
+As expected, the two outputs are the same.\\*
 Consider the following \emph{truth table}:
 \begin{center}
 \begin{tabular}{|c|c|c|}
@@ -349,15 +350,15 @@ Consider the following \emph{truth table}:
 	\hline 
 	1 & 1 & 0 \\ 
 	\hline 
-\end{tabular}\\*
+\end{tabular}
 \end{center} 
 This is known as the logical operator \textit{xor}. A Neural Network is capable to learn the \textit{xor} computation of two logical variables.\\*
-Consider the following NN Model:\\*
+Consider the NN model shown above.
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\linewidth]{img/mymodel}
+	\includegraphics[scale=0.4]{img/mymodel}
 	\label{fig:mymodel}
-\end{figure}\\*
+\end{figure}
 This is a MLP, or \emph{universal approximator}. The aim is to modify the provided code in order to implement such a MLP which is able to learn to compute the \emph{xor}.\\*
 Start from the Neuron class\footnote{The information hiding principle has been completely ignored, in order to simplify the code}:
 \begin{lstlisting}[language=Java]
@@ -393,7 +394,6 @@ public class NeuronLayer {
 			this.neurons[i] = (new Neuron(inputsPerNeuron));
 		}
 	}
-	
 	public double[] feedForward(double[] inputs) {
 		double[] outputs = new double[neurons.length];
 		for (int i = 0; i < neurons.length; i++) {
@@ -401,7 +401,6 @@ public class NeuronLayer {
 		}
 		return outputs;
 	}
-	
 	public double[] getOutputs() {
 		double[] outputs = new double[neurons.length];
 		for (int i = 0; i < neurons.length; i++) {
@@ -411,18 +410,18 @@ public class NeuronLayer {
 	}
 }
 \end{lstlisting}
-In this class it is defined the number of neurons the layer is composed of, the inputs that each neuron will handle (equivalently, the length of the vector of weights to estimate for each neuron) and two methods: the \texttt{feedForward()} which is a generalization of the \texttt{predict()} method defined for each neuron, and it returns a collection of prediction computed by each neuron; and the \texttt{getOutputs()} which simply collects each neuron's output without providing them of any input.\\* The scope here it is clear, we have implemented the MLP's hidden layer with a variable amount of hidden neurons:
+In this class it is defined the number of neurons the layer is composed of, the inputs that each neuron will handle (equivalently, the length of the vector of weights to estimate for each neuron) and two methods: the \texttt{feedForward()} which is a generalization of the \texttt{predict()} method defined for each neuron, and it returns a collection of prediction computed by each neuron; and the \texttt{getOutputs()} which simply collects each neuron's output without providing them of any input.\\* The scope here is clear, we have implemented the MLP's hidden layer with a variable amount of hidden neurons:
 \begin{figure}[h!]
 	\centering
-	\includegraphics[scale=1.5]{img/hiddenlayer}
+	\includegraphics[scale=1.4]{img/hiddenlayer}
 	\label{fig:hiddenlayer}
-\end{figure}\newpage\noindent
+\end{figure}\\*
 Putting layers together means to construct a MLP Neural Network.
 \begin{lstlisting}
 public class NeuralNetwork {
 	private int n_in,n_hid,n_out;
 	private NeuronLayer hidden,output;
-	public NeuralNetwork(int inputNeurons, int hiddenNeurons, int numberOfOutputs) {
+	public NeuralNetwork(int inputNeurons,int hiddenNeurons,int numberOfOutputs){
 		n_in = inputNeurons;
 		n_hid = hiddenNeurons;
 		n_out = numberOfOutputs;
@@ -436,17 +435,11 @@ First of all, the MLP must initialize hidden and output layers neurons weights. 
 public void initInputToHidden() {
 	for (int i = 0; i < n_hid; i++) {
 		for (int j = 0; j < n_in; j++) {
-			hidden.neurons[i].weights[j] = Math.random();
-		}
-	}
-}
+			hidden.neurons[i].weights[j] = Math.random();}}}
 public void initHiddenToOut() {
 	for (int i = 0; i < n_out; i++) {
 		for (int j = 0; j < n_hid; j++) {
-			output.neurons[i].weights[j] = Math.random();
-		}
-	}
-}
+			output.neurons[i].weights[j] = Math.random();}}}
 \end{lstlisting}
 The MLP must be capable of performing prediction:
 \begin{lstlisting}
@@ -508,8 +501,7 @@ public double totalError(double[][][] training_sets) {
 	return err;
 }
 \end{lstlisting}
-\subsection{MLP Training and Utilization}
-Now the model is ready to being trained and utilized. Start from constructing the model shown at the top of this section. It has 2 inputs, 5 hidden neurons, 1 output:
+Now the model is ready to being trained and used. Start from constructing the model shown at the top of this section. It has 2 inputs, 5 hidden neurons, 1 output:
 \begin{lstlisting}
 NeuralNetwork nn = new NeuralNetwork(2, 5, 1);
 \end{lstlisting}
@@ -538,16 +530,44 @@ And this is the output:
 Error before training: 0.7825167086789118
 Error after training: 0.0019131802708672071
 \end{lstlisting}
-In the next page it follows a \texttt{main()} example.\\*
-What it is implemented is a MLP which performs a \emph{xor} approximation using the statistical model \emph{non-linear regression}. The name \emph{universal approximator} has a powerful meaning. If you try to train the MLP with other datasets which arise from considering other functions than the \emph{xor}, such as the \emph{and}, \emph{nand}, etc, the MLP will approximate them with the same degree of accuracy.\\*\\*
-The entire code is available at:\\* \href{https://github.com/alexfoglia1/MASL/tree/master/exam/JavaNN/src}{https://github.com/alexfoglia1/MASL/tree/master/exam/JavaNN/src}
-\newpage
-\begin{figure}
-	\centering
-	\includegraphics[scale=1.91]{img/nn}
-	\label{fig:nn}
-\end{figure}
-\section{Conclusions}
+What it is implemented is a MLP which performs a \emph{xor} approximation using the statistical model \emph{non-linear regression}. If you try to train the MLP with other datasets which arise from considering other functions than the \emph{xor}, such as the \emph{and}, \emph{nand}, etc, the MLP will approximate them with the same degree of accuracy. Here it follows a \texttt{main()} example.
+\footnote{The entire code is available at:\\* \href{https://github.com/alexfoglia1/MASL/tree/master/exam/JavaNN/src}{https://github.com/alexfoglia1/MASL/tree/master/exam/JavaNN/src}}
+\begin{lstlisting}
+public static void main(String[] args) {
+	double[][][] training_sets = {
+	{{0, 0}, {0}},
+	{{0, 1}, {1}},
+	{{1, 0}, {1}},
+	{{1, 1}, {0}}
+	};
+	NeuralNetwork nn = new NeuralNetwork(2, 5, 1);
+	System.out.println("Before training");
+	makePredictions(nn);
+	//perform training as before
+	System.out.println("After training");
+	makePredictions(nn);
+}
+private static void makePredictions(NeuralNetwork nn) {
+	double[] prediction = nn.feedForward(new double[] {0,0});
+	System.out.println("0 xor 0 = " + Arrays.toString(prediction));
+	prediction = nn.feedForward(new double[] {0,1});
+	//... and so on
+}
+\end{lstlisting}
+\begin{lstlisting}
+Before training
+0 xor 0 = [0.8259446970943887]
+0 xor 1 = [0.8743300669508968]
+1 xor 0 = [0.8715849495984895]
+1 xor 1 = [0.9057890050448435]
+
+After training
+0 xor 0 = [0.03292275347937093]
+0 xor 1 = [0.9742047963078706]
+1 xor 0 = [0.9755612350006293]
+1 xor 1 = [0.020623955109387932]
+\end{lstlisting}
+\paragraph{Conclusions}
 In this study, based on the paper "Neural Networks and Statistical Model" by Warren S. Sarle, I illustrated the similarities between models of artificial neural networks and some known statistical regression models. Artificial neural networks are nothing more than a technical implementation of these theoretical models of estimation. The purpose of a regression model is to infer a function that is as close as possible to the real function that generated a certain set of data, always assuming that this function exists. Therefore, what is called "intelligence" of a Neural Network, is the degree of accuracy with which a certain regression model can approximate a distribution from which the data is assumed to be observed. My opinion is that the assumption underlying these models is very heavy, and we are still far away from a true reproduction of human intelligence. Moreover, when any artificial intelligence system is used, the questions we have to ask are:
 \begin{itemize}
 	\item Does a precise distribution for the data we have observed really exist?
