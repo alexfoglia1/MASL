@@ -1,0 +1,25 @@
+\frametitle{Launch the NN}
+Now the model is ready to use. Start from constructing the model shown before. It has 2 inputs, 5 hidden neurons, and 1 output:
+\begin{lstlisting}
+NeuralNetwork nn = new NeuralNetwork(2, 5, 1);
+\end{lstlisting}
+Define the training sets as defined in the \emph{xor} table of truth:
+\begin{lstlisting}
+double[][][] training_sets = {{{0, 0}, {0}},{{0, 1}, {1}},{{1, 0}, {1}},{{1, 1}, {0}}};
+\end{lstlisting}
+Train the network:
+\begin{lstlisting}
+System.out.println("Error before training: "+nn.totalError(training_sets));
+for (int i = 0; i < 10000; i++) {
+	int randIndex = (int) (Math.random() * training_sets.length);
+	double[] t_in = training_sets[randIndex][0];
+	double[] t_out = training_sets[randIndex][1];
+	nn.train(t_in, t_out);
+}
+System.out.println("Error after training: "+nn.totalError(training_sets));
+\end{lstlisting}
+And this is the output:
+\begin{lstlisting}
+Error before training: 0.7825167086789118
+Error after training: 0.0019131802708672071
+\end{lstlisting}

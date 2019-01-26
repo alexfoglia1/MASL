@@ -46,8 +46,7 @@
 	The alleged "intelligence" of a NN is a matter of dispute, since networks, like many statistical methods, are capable of processing vast amounts of data and making predictions, but this does not make them "intelligent" in the usual sense of the word. What engineers and computer scientists call "learning" is just what it is called "estimation" in the statistical jargon.\\*
 	Most of the NN models are similar or identical to statistical techniques such as generalized linear models, polynomial regression, principal components and cluster analysis, etc, but there are also a few NN models that have no precise statistical equivalent but may be useful for data analysis.\\*
 	Although many NN models are similar or identical to well-known statistical models, the terminology in the NN literature is quite different from that in statistics. Here it follows a brief table which explain such a difference.
-	\\*
-	\\*
+\begin{center}
 	\begin{tabular}{|c|c|}
 		\hline 
 		\textbf{Statistical Jargon} & \textbf{NN Jargon} \\ 
@@ -82,7 +81,7 @@
 		\hline 
 		Interpolation and Extrapolation & Generalization \\ 
 		\hline 
-	\end{tabular} \\*\\*
+	\end{tabular}\end{center}
 	Terms like \emph{sample} and \emph{population} does not have NN equivalents, but data are often divided into a \emph{training set} and \emph{test set} for cross-validation.
 	\paragraph{NN and Linear Regression Model}
 	Linear regression models are simple statistical models used to predict the expected value of a \emph{dependent variable} $\textbf{Y}$ given a set of \emph{observed variables} $\textbf{X}$. The model is the following:
@@ -105,7 +104,8 @@
 	Such a NN represents the Linear Regression Model in the NN Jargon.
 	\paragraph{Logistic Regression: Perceptrons}
 	A perceptron is a very small NN, composed by more than one neuron, and it usually computes a linear combination of the inputs.
-	A perceptron has $n>0$ input. Each input has a specific \emph{weight} $\beta_i$. The \emph{weights} are the parameters to be estimated. In order to estimate $\beta_i$ parameters, it is used a specific \emph{activation function} which usually maps any real input to a bounded range. Bounded activation functions are called \emph{squashing functions}, for instance the logistic function:
+	A perceptron has $n>0$ input. Each input has a specific \emph{weight} $\beta_i$. The \emph{weights} are the parameters to be estimated. 
+	More generally, the output of a perceptron is an evaluation of an \emph{activation function} on the provided inputs. Activation functions are usually \emph{bounded}. A bounded function maps any real input to a bounded range. Bounded activation functions are called \emph{squashing functions}, for instance the logistic function:
 	$$
 	\texttt{act}(x) = \dfrac{1}{1+e^{-x}}
 	$$
@@ -116,17 +116,27 @@
 	$$
 	\lim_{x\rightarrow -\infty} \dfrac{1}{1+e^{-x}} = 	\lim_{x\rightarrow +\infty} \dfrac{1}{1+{e^x}} = \dfrac{1}{\infty} = 0
 	$$
-	The estimation is usually performed by the \emph{maximum likelihood} method, but another method, very used in NN context, is the \emph{gradient descendant}.\\*
-	Suppose it exists a set of data that called training set. This is a set of pairs of  \texttt{input - expected output} and the aim is to minimize
+	What a perceptron is supposed to do is, given $\textbf{x}$ as an input, and assuming the logistic function as the activation function is to
+	 compute $\hat x = \sum_{i=1}^N \beta_i \textbf{X}_i$ and 
+		return \texttt{act}$(\hat x) = \dfrac{1}{1+e^{-(\beta_1\textbf{X}_1+ \dots + \beta_n\textbf{X}_n)}}$.
+	Notice that 
 	$$
-	\sum \sum r_j^2
+	\dfrac{1}{1+e^{-(\beta_i\textbf{X}_i+ \dots + \beta_n\textbf{X}_n)}} =\dfrac{e^{(\beta_i\textbf{X}_i+ \dots + \beta_n\textbf{X}_n)}}{1+e^{(\beta_i\textbf{X}_i+ \dots + \beta_n\textbf{X}_n)}}
 	$$
-	Where the $r_j$ is the difference between the expected output and the predicted value.\\*
-	The \emph{logisitc regression model} is a \emph{non-linear} regression model used when the dependent variable is dichotomic.\\*
-	The model formulae is the following:
+	The \emph{logisitc regression model} is a \emph{non-linear} regression model used when the dependent variable is dichotomic. The model formula is the following:
 	$$
 	\mathbb{E}(\textbf{Y}|\textbf{X}) = \dfrac{e^{\beta_0 + \beta_1x_1+\dots+\beta_n x_n}}{1 +e^{\beta_0 + \beta_1x_1+\dots+\beta_n x_n} }
 	$$
+	That is, exactly, what a perceptron with a logistic activation function computes. In order to estimate the $\beta_i$ parameters we have two options:
+	\begin{itemize}
+		\item Maximum likelihood \color{black} method
+		\item Gradient descent \color{black} method
+	\end{itemize}
+	The gradient descent method is an optimization algorithm which aims to estimate parameters given a set of pairs \texttt{input - expected output} (the training set). 
+	The goal here is to minimize 	$$
+\sum \sum r_j^2
+$$
+Where the $r_j$ is the difference between the expected output and the predicted value.\\*
 	The following perceptron with a logistic activation function is a logistic regression model:
 		\begin{figure}[h!]
 		\centering
@@ -232,23 +242,17 @@ The code must be modified in order to implement a logistic regression model:
 \begin{lstlisting}[language=Java]
 public class Neuron {
 	private double[] weights;
-	
 	public Neuron(int n_inputs) {
 		weights = new double[n_inputs];
 	}
-	
 	private double logistic(double x) {
 		return 1 / (1 + Math.exp(-x));
 	}
-	
 	public double predict(double[] inputs) {
 		double sum = 0;
 		for (int i = 0; i < inputs.length; i++) {
 			sum += weights[i] * inputs[i];
-		}
-		return logistic(sum);
-	}
-}
+		} return logistic(sum); } }
 \end{lstlisting}
 Now there is an array of weights to be approximated, and the prediction is performed by applying the logistic function to the linear combination of the given inputs. Since weights are all zero by default, every invocation on the \texttt{predict()} method evaulates to \texttt{0.5} because
 $$
@@ -268,13 +272,13 @@ public void estimateParameters(double[][] xi, double[] yi) {
 		weights[j] += gradient[j];
 }
 \end{lstlisting}
-Note that the logistic function has a "friendly" derivative that permit us to compute its gradient in such an easy way.\\*
+Note that the logistic function has a "friendly" derivative that permit us to compute its gradient in such an easy way. 
 Consider this piece of python code:
 \begin{lstlisting}[language=Python]
 import math
-b0 = 1
-b1 = 2
-squash = lambda x: math.exp(-(b0*x[0]+b1*x[1]))/(1+math.exp(-(b0*x[0]+b1*x[1])))
+b0 = -1
+b1 = -2
+squash = lambda x: math.exp((b0*x[0]+b1*x[1]))/(1+math.exp((b0*x[0]+b1*x[1])))
 print squash([1,0])
 print squash([0,1])
 print squash([0,0])
@@ -301,25 +305,7 @@ Obtaining the following coefficients:
 \begin{lstlisting}
 [-1.0000000000000004, -1.9999999999999993]
 \end{lstlisting}
-Which are approximately the $\beta_0,\beta_1$ used to generate data but with the sign changed, in fact, in the Java program, it is used the following logistic function:
-\begin{lstlisting}[language = Java]
-private double logistic(double x) {
-	return 1 / (1 + Math.exp(-x));
-}
-\end{lstlisting}
-Which is
-$
-\dfrac{1}{1+e^{-x}}
-$
- but in the python code, it is used
-$
-\dfrac{e^{-x}}{1+e^{-x}}
-$
- for which it is:
-$
-\dfrac{e^{-x}}{1+e^{-x}} = \dfrac{1}{1 + e^x}
-$
-Here it follows a simple trial:
+Which are approximately the $\beta_0,\beta_1$ used to generate data. Here it follows a simple trial:
 \begin{lstlisting}
 public static void main(String[] args){
 	Neuron n = new Neuron(2);
@@ -368,6 +354,8 @@ public class Neuron {
 	public double output;
 	public Neuron(int n_inputs) {
 		weights = new double[n_inputs];
+		for(int i = 0; i < n_inputs; i++)
+			weights[i] = Math.random();
 	}
 	private double logistic(double x) {
 		return 1/(1+Math.exp(-x));
@@ -384,7 +372,7 @@ public class Neuron {
 }
 \end{lstlisting}
 The main modification is that the \texttt{estimateParameters()} method will be moved in another class. Now a Neuron does also keep track of the provided inputs, this will be useful when it will be implemented the \emph{back-propagation algorithm}, an algorithm which estimate weights aiming to minimize the error between the predicted output and the desired output using the \emph{descent gradient} principle.\\*
-Since MLPs have more than one layer, it is needed to define, from a programming point of view, what a layer is.\\*It is just a collection of Neurons:
+Since MLPs have more than one layer, it is needed to define, from a programming point of view, what a layer is: a collection of Neurons.
 \begin{lstlisting}[language=Java]
 public class NeuronLayer {
 	public Neuron[] neurons;
@@ -429,17 +417,6 @@ public class NeuralNetwork {
 		output = new NeuronLayer(n_out, n_hid);
 	}
 }
-\end{lstlisting}
-First of all, the MLP must initialize hidden and output layers neurons weights. The most recomended way is to perform this task using random values:
-\begin{lstlisting}
-public void initInputToHidden() {
-	for (int i = 0; i < n_hid; i++) {
-		for (int j = 0; j < n_in; j++) {
-			hidden.neurons[i].weights[j] = Math.random();}}}
-public void initHiddenToOut() {
-	for (int i = 0; i < n_out; i++) {
-		for (int j = 0; j < n_hid; j++) {
-			output.neurons[i].weights[j] = Math.random();}}}
 \end{lstlisting}
 The MLP must be capable of performing prediction:
 \begin{lstlisting}
