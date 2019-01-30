@@ -154,7 +154,7 @@ Terms like \emph{sample} and \emph{population} does not have NN equivalents, but
 \begin{itemize}
 	\item How to estimate $\beta_0,\beta_1$ parameters?
 	\item \color{red} Ordinary least square \color{black} method
-	\item $S$ is defined as:
+	\item We define the \emph{Loss Function} $S$ as:
 	$$
 	S(\beta_0,\beta_1) = \sum_{i=1}^N (y_i - \beta_0 - \beta_1 \textbf{X}_i)^2
 	$$
@@ -193,7 +193,7 @@ Terms like \emph{sample} and \emph{population} does not have NN equivalents, but
 		\item Compute $$\hat x = \sum_{i=1}^N \beta_i \textbf{X}_i$$
 		\item Return \texttt{act}$(\hat x) =$ $$ \dfrac{1}{1+e^{-(\beta_1\textbf{X}_1+ \dots + \beta_n\textbf{X}_n)}}$$
 	\end{itemize}
-\item Notice that 
+\item Note that 
 $$
 \dfrac{1}{1+e^{-(\beta_i\textbf{X}_i+ \dots + \beta_n\textbf{X}_n)}} =\dfrac{e^{(\beta_i\textbf{X}_i+ \dots + \beta_n\textbf{X}_n)}}{1+e^{(\beta_i\textbf{X}_i+ \dots + \beta_n\textbf{X}_n)}}
 $$
@@ -209,24 +209,18 @@ $$
 	\item That is, exactly, what a perceptron with a logistic activation function computes
 \end{itemize}
 \end{frame}
-\begin{frame}{NN and Logistic Regression Model}
+\begin{frame}{How to estimate $\beta_i$ parameters?}
 \begin{itemize}
-	\item Again, how to estimate $\beta_i$ parameters?
 	\item Two possible ways:
 	\begin{itemize}
 	\item \color{red} Maximum likelihood \color{black} method
 	\item \color{red} Gradient descent \color{black} method
 	\end{itemize}
 	\item The gradient descent method is an optimization algorithm which aims to estimate parameters given a set of pairs\\*\texttt{input - expected output} (the training set)
-\end{itemize}
-\end{frame}
-\begin{frame}{NN and Logistic Regression Model}
-\begin{itemize}
-	\item The goal here is to minimize 	$$
+	\\*Aiming to minimize 	$$
 	\sum \sum r_j^2
 	$$
 	\item	Where the $r_j$ is the difference between the expected output and the predicted value
-	\item This is why estimation and learning are the same concept as perceived from different points of view
 \end{itemize}
 \end{frame}
 \begin{frame}{NN and Logistic Regression Model}
@@ -399,7 +393,7 @@ public void estimateParameters(double[][] xi, double[] yi) {
 		weights[j] += gradient[j];
 }
 \end{lstlisting}
-Note that the logistic function has a "friendly" derivative that permit us to compute its gradient in such an easy way
+Note that we are using a particular Loss Function for which it is possible to compute the gradient in such an easy way
 \end{frame}
 \begin{frame}[fragile]{Extending the code: Logistic Regression}
 Consider this piece of python code:

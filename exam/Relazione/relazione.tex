@@ -88,11 +88,11 @@
 	$$
 	\textbf{Y}_i = \beta_0 + \beta_1 \textbf{X}_i + \varepsilon_i
 	$$
-	Where $i$ variates between $1$ to $N$ where $N$ is the number of observations, $\textbf{Y}_i$ is the dependent variable, $\textbf{X}_i$ is the independent variable, $\beta_0 + \beta_1 \textbf{X}_i$ is the regression line and $\varepsilon_i$ is the statistical error. Parameters $\beta_0$ and $\beta_1$ are called respectively the intercept and the angular coefficient of the regression line, and they must be estimated in order to have a reliable prediction of the $\textbf{Y}$. To perform this task, it is often used the \emph{ordinary least square} method. $S$ is defined as:
+	Where $i$ variates between $1$ to $N$ where $N$ is the number of observations, $\textbf{Y}_i$ is the dependent variable, $\textbf{X}_i$ is the independent variable, $\beta_0 + \beta_1 \textbf{X}_i$ is the regression line and $\varepsilon_i$ is the statistical error. Parameters $\beta_0$ and $\beta_1$ are called respectively the intercept and the angular coefficient of the regression line, and they must be estimated in order to have a reliable prediction of the $\textbf{Y}$. To perform this task, it is often used the \emph{ordinary least square} method. The cost function $S$ is defined as:
 	$$
 	S(\beta_0,\beta_1) = \sum_{i=1}^N (y_i - \beta_0 - \beta_1 \textbf{X}_i)^2
 	$$
-	$S$ is a function from $\mathbb{R}^2 \rightarrow \mathbb{R}$ and parameters $\beta_0,\beta_1$ are estimated  as the arguments of $S$ on which the function evaluates to its minimum.\\*
+	$S$ is a function from $\mathbb{R}^2 \rightarrow \mathbb{R}$ and parameters $\beta_0,\beta_1$ are estimated  as the arguments of $S$ on which the function evaluates to its minima.\\*
 	Consider the following NN:\\*
 	\begin{figure}[h!]
 		\centering
@@ -272,7 +272,7 @@ public void estimateParameters(double[][] xi, double[] yi) {
 		weights[j] += gradient[j];
 }
 \end{lstlisting}
-Note that the logistic function has a "friendly" derivative that permit us to compute its gradient in such an easy way. 
+Note that the logistic function has a particular Loss Function with a "friendly" derivative that permit us to compute its gradient in such an easy way. 
 Consider this piece of python code:
 \begin{lstlisting}[language=Python]
 import math
